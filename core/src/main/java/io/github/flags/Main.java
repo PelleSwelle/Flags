@@ -19,6 +19,7 @@ public class Main extends ApplicationAdapter {
     private Flag flag;
     private Vector2 touchPosition;
     private FitViewport viewport;
+    private Sprite grabbedPiece;
 
     @Override
     public void create() {
@@ -30,6 +31,8 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
+
+        grabbedPiece = null;
     }
 
     @Override
@@ -44,22 +47,37 @@ public class Main extends ApplicationAdapter {
         enableInput();
     }
 
+    private boolean isAboveSprite(Sprite sprite) {
+        return touchPosition.x > sprite.getX() &&
+        touchPosition.x < sprite.getX() + sprite.getWidth() &&
+        touchPosition.y > sprite.getY() &&
+        touchPosition.y < sprite.getY() + sprite.getHeight();
+    }
+
     private void enableInput() {
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.justTouched()) {
             touchPosition.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
 
-            for (Sprite piece : flag.sprites) {
+            for (Sprite sprite : flag.sprites) {
                 if (
-                    touchPosition.x > piece.getX() &&
-                    touchPosition.x < piece.getX() + piece.getWidth() &&
-                    touchPosition.y > piece.getY() &&
-                    touchPosition.y < piece.getY() + piece.getHeight()
+                    isAboveSprite(sprite)
                 ) {
-                    piece.setCenterX(touchPosition.x);
-                    piece.setCenterY(touchPosition.y);
+                    grabbedPiece = sprite;
+                    System.out.println("grabbed piece: " + grabbedPiece);
                 }
             }
+        }
+
+        if (Gdx.input.isTouched() && grabbedPiece != null) {
+            touchPosition.set(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPosition);
+            grabbedPiece.setCenterX(touchPosition.x);
+            grabbedPiece.setCenterY(touchPosition.y);
+        }
+
+        if (!Gdx.input.isTouched()) {
+            grabbedPiece = null;
         }
     }
 
@@ -67,6 +85,10 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         image.dispose();
+    }
+
+    private void grabPiece() {
+
     }
 
     @Override
