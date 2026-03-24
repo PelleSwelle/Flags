@@ -72,10 +72,20 @@ public class Main extends ApplicationAdapter {
         }
 
         if (Gdx.input.isTouched() && selectedSprite != null) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos);
-            selectedSprite.setCenterX(touchPos.x);
-            selectedSprite.setCenterY(touchPos.y);
+            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+//                ROTATE SPRITE
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+                viewport.unproject(touchPos);
+                selectedSprite.setRotation(touchPos.y);
+            }
+            else {
+//                MOVE SPRITE
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+                viewport.unproject(touchPos);
+                selectedSprite.setCenterX(touchPos.x);
+                selectedSprite.setCenterY(touchPos.y);
+
+            }
         }
 
         if (!Gdx.input.isTouched()) {
