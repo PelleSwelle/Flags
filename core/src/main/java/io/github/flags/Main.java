@@ -17,9 +17,9 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Texture image;
     private Flag flag;
-    private Vector2 touchPosition;
+    private Vector2 touchPos;
     private FitViewport viewport;
-    private Sprite grabbedPiece;
+    private Sprite selectedSprite;
 
     @Override
     public void create() {
@@ -27,12 +27,12 @@ public class Main extends ApplicationAdapter {
         image = new Texture("libgdx.png");
         flag = new Flag("Afghanistan");
         flag.loadPieces();
-        touchPosition = new Vector2();
+        touchPos = new Vector2();
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
-        grabbedPiece = null;
+        selectedSprite = null;
     }
 
     @Override
@@ -48,36 +48,38 @@ public class Main extends ApplicationAdapter {
     }
 
     private boolean isAboveSprite(Sprite sprite) {
-        return touchPosition.x > sprite.getX() &&
-        touchPosition.x < sprite.getX() + sprite.getWidth() &&
-        touchPosition.y > sprite.getY() &&
-        touchPosition.y < sprite.getY() + sprite.getHeight();
+        return touchPos.x > sprite.getX() &&
+        touchPos.x < sprite.getX() + sprite.getWidth() &&
+        touchPos.y > sprite.getY() &&
+        touchPos.y < sprite.getY() + sprite.getHeight();
     }
 
     private void enableInput() {
+//        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+//            if (selectedSprite != null) {
+//
+//            }
+//        }
         if (Gdx.input.justTouched()) {
-            touchPosition.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPosition);
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPos);
 
             for (Sprite sprite : flag.sprites) {
-                if (
-                    isAboveSprite(sprite)
-                ) {
-                    grabbedPiece = sprite;
-                    System.out.println("grabbed piece: " + grabbedPiece);
+                if (isAboveSprite(sprite)) {
+                    selectedSprite = sprite;
                 }
             }
         }
 
-        if (Gdx.input.isTouched() && grabbedPiece != null) {
-            touchPosition.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPosition);
-            grabbedPiece.setCenterX(touchPosition.x);
-            grabbedPiece.setCenterY(touchPosition.y);
+        if (Gdx.input.isTouched() && selectedSprite != null) {
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPos);
+            selectedSprite.setCenterX(touchPos.x);
+            selectedSprite.setCenterY(touchPos.y);
         }
 
         if (!Gdx.input.isTouched()) {
-            grabbedPiece = null;
+            selectedSprite = null;
         }
     }
 
