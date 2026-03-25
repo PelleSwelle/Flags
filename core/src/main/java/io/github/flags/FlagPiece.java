@@ -5,16 +5,20 @@ import com.badlogic.gdx.math.Vector2;
 
 public class FlagPiece {
     Sprite sprite;
-    Vector2 currentPosition;
+    public Vector2 currentPosition;
     public Vector2 intendedPosition;
 
     public FlagPiece(Sprite sprite, Vector2 intendedPosition) {
         this.sprite = sprite;
         this.intendedPosition = intendedPosition;
+        this.currentPosition = new Vector2(intendedPosition);
     }
 
     public void setPosition(float x, float y) {
-        this.sprite.setPosition(x, y);
+        this.currentPosition.x = x;
+        this.currentPosition.y = y;
+
+        this.sprite.setPosition(currentPosition.x, currentPosition.y);
     }
 
     public void setRotation(float degrees) {

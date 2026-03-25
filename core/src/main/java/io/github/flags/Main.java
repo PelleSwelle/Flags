@@ -3,9 +3,11 @@ package io.github.flags;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -20,6 +22,7 @@ public class Main extends ApplicationAdapter {
     private Vector2 touchPos;
     private FitViewport viewport;
     private FlagPiece selectedPiece;
+    private static ShapeRenderer debugRenderer;
 
     @Override
     public void create() {
@@ -31,7 +34,7 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-
+        debugRenderer = new ShapeRenderer();
         selectedPiece = null;
     }
 
@@ -41,12 +44,21 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         for (FlagPiece piece : flag.pieces) {
             piece.sprite.draw(batch);
+//            drawDebugLine(piece.currentPosition, piece.intendedPosition);
         }
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
         batch.end();
 
+        Gdx.gl.glLineWidth(1);
+        debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.WHITE);
+        for (FlagPiece piece : flag.pieces) {
+            debugRenderer.line(piece.currentPosition, piece.intendedPosition);
+        }
+        debugRenderer.end();
         enableInput();
     }
 
@@ -55,6 +67,14 @@ public class Main extends ApplicationAdapter {
         touchPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
         touchPos.y > piece.sprite.getY() &&
         touchPos.y < piece.sprite.getY() + piece.sprite.getHeight();
+    }
+
+    private static void drawDebugLine(Vector2 start, Vector2 end) {
+        Gdx.gl.glLineWidth(1);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.WHITE);
+        debugRenderer.line(start, end);
+        debugRenderer.end();
     }
 
     private void enableInput() {
@@ -83,9 +103,7 @@ public class Main extends ApplicationAdapter {
 //                MOVE SPRITE
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos);
-                selectedPiece.sprite.setCenterX(touchPos.x);
-                selectedPiece.sprite.setCenterY(touchPos.y);
-
+                selectedPiece.setPosition(touchPos.x, touchPos.y);
             }
         }
 
