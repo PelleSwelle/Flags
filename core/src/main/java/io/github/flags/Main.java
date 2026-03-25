@@ -19,7 +19,7 @@ public class Main extends ApplicationAdapter {
     private Flag flag;
     private Vector2 touchPos;
     private FitViewport viewport;
-    private Sprite selectedSprite;
+    private FlagPiece selectedPiece;
 
     @Override
     public void create() {
@@ -32,26 +32,26 @@ public class Main extends ApplicationAdapter {
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
-        selectedSprite = null;
+        selectedPiece = null;
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         batch.begin();
-        for (Sprite sprite : flag.sprites) {
-            sprite.draw(batch);
+        for (FlagPiece piece : flag.pieces) {
+            piece.sprite.draw(batch);
         }
         batch.end();
 
         enableInput();
     }
 
-    private boolean isAboveSprite(Sprite sprite) {
-        return touchPos.x > sprite.getX() &&
-        touchPos.x < sprite.getX() + sprite.getWidth() &&
-        touchPos.y > sprite.getY() &&
-        touchPos.y < sprite.getY() + sprite.getHeight();
+    private boolean isAbovePiece(FlagPiece piece) {
+        return touchPos.x > piece.sprite.getX() &&
+        touchPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
+        touchPos.y > piece.sprite.getY() &&
+        touchPos.y < piece.sprite.getY() + piece.sprite.getHeight();
     }
 
     private void enableInput() {
@@ -64,32 +64,32 @@ public class Main extends ApplicationAdapter {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
 
-            for (Sprite sprite : flag.sprites) {
-                if (isAboveSprite(sprite)) {
-                    selectedSprite = sprite;
+            for (FlagPiece piece : flag.pieces) {
+                if (isAbovePiece(piece)) {
+                    selectedPiece = piece;
                 }
             }
         }
 
-        if (Gdx.input.isTouched() && selectedSprite != null) {
+        if (Gdx.input.isTouched() && selectedPiece != null) {
             if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 //                ROTATE SPRITE
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos);
-                selectedSprite.setRotation(touchPos.y);
+                selectedPiece.setRotation(touchPos.y);
             }
             else {
 //                MOVE SPRITE
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos);
-                selectedSprite.setCenterX(touchPos.x);
-                selectedSprite.setCenterY(touchPos.y);
+                selectedPiece.sprite.setCenterX(touchPos.x);
+                selectedPiece.sprite.setCenterY(touchPos.y);
 
             }
         }
 
         if (!Gdx.input.isTouched()) {
-            selectedSprite = null;
+            selectedPiece = null;
         }
     }
 

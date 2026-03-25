@@ -4,25 +4,25 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.util.ArrayList;
 
 public class Flag {
-    public ArrayList<Sprite> sprites;
+    public ArrayList<FlagPiece> pieces;
 
 //    TODO: selection of country
     public Flag(String country) {
-        this.sprites = loadPieces();
+        this.pieces = loadPieces();
     }
 
-    public ArrayList<Sprite> loadPieces() {
+    public ArrayList<FlagPiece> loadPieces() {
         String[] files = {"black.png", "red.png", "green.png", "seal.png"};
-        ArrayList<Sprite> sprites = new ArrayList<>();
+        ArrayList<FlagPiece> pieces = new ArrayList<>();
         for (String file : files) {
-            sprites.add(new Sprite(new Texture(file)));
+            pieces.add(new FlagPiece(new Sprite(new Texture(file))));
         }
 
-        for (Sprite sprite : sprites) {
+        for (FlagPiece piece : pieces) {
 //            TODO: make this the width and height of the window.
-            sprite.setPosition((float)Math.random() * (800), (float)Math.random() * (800));
+            piece.setPosition((float)Math.random() * (800), (float)Math.random() * (800));
         }
-        return sprites;
+        return pieces;
     }
 
 //    TODO: public void moveUpSprite(Sprite sprite) {}
