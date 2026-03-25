@@ -25,7 +25,7 @@ public class Main extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
-        flag = new Flag("Afghanistan");
+        flag = new Flag("afghanistan");
         flag.loadPieces();
         touchPos = new Vector2();
         viewport = new FitViewport(1028, 800);
@@ -42,6 +42,9 @@ public class Main extends ApplicationAdapter {
         for (FlagPiece piece : flag.pieces) {
             piece.sprite.draw(batch);
         }
+        if (flag.reference_displayed) {
+            flag.reference.draw(batch);
+        }
         batch.end();
 
         enableInput();
@@ -55,11 +58,9 @@ public class Main extends ApplicationAdapter {
     }
 
     private void enableInput() {
-//        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-//            if (selectedSprite != null) {
-//
-//            }
-//        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            flag.toggleReference();
+        }
         if (Gdx.input.justTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
