@@ -1,6 +1,8 @@
 package io.github.flags;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.ArrayList;
 
 public class Flag {
@@ -28,14 +30,25 @@ public class Flag {
 
     public ArrayList<FlagPiece> loadPieces() {
         String[] files = {"black.png", "red.png", "green.png", "seal.png"};
+        Vector2[] positions = {
+            new Vector2(0, 0),
+            new Vector2(300, 0),
+            new Vector2(600, 0),
+            new Vector2((float)225.99, (float)60.41)
+        };
         ArrayList<FlagPiece> pieces = new ArrayList<>();
-        for (String file : files) {
-            pieces.add(new FlagPiece(new Sprite(new Texture(path+this.country+"/pieces/" + file))));
+        for (int i = 0; i < files.length; i++) {
+            pieces.add(
+                new FlagPiece(
+                    new Sprite(new Texture(path+this.country+"/pieces/" + files[i])),
+                    positions[i]
+                )
+            );
         }
 
         for (FlagPiece piece : pieces) {
 //            TODO: make this the width and height of the window.
-            piece.setPosition((float)Math.random() * (800), (float)Math.random() * (800));
+            piece.setPosition(piece.intendedPosition.x, piece.intendedPosition.y);
         }
         return pieces;
     }

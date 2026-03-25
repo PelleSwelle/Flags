@@ -6,10 +6,11 @@ import com.badlogic.gdx.math.Vector2;
 public class FlagPiece {
     Sprite sprite;
     Vector2 currentPosition;
-    Vector2 intendedPosition;
+    public Vector2 intendedPosition;
 
-    public FlagPiece(Sprite sprite) {
+    public FlagPiece(Sprite sprite, Vector2 intendedPosition) {
         this.sprite = sprite;
+        this.intendedPosition = intendedPosition;
     }
 
     public void setPosition(float x, float y) {
