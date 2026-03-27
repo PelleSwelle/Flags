@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +24,7 @@ public class Main extends ApplicationAdapter {
     private FitViewport viewport;
     private FlagPiece selectedPiece;
     private static ShapeRenderer debugRenderer;
+    BitmapFont font;
 
     @Override
     public void create() {
@@ -36,30 +38,36 @@ public class Main extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
         debugRenderer = new ShapeRenderer();
         selectedPiece = null;
+        font = new BitmapFont();
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         batch.begin();
-        for (FlagPiece piece : flag.pieces) {
-            piece.sprite.draw(batch);
-//            drawDebugLine(piece.currentPosition, piece.intendedPosition);
-        }
+        drawFlagPieces();
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
+        font.draw(batch, "hello", 10, 10);
         batch.end();
 
         Gdx.gl.glLineWidth(1);
         debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
         debugRenderer.setColor(Color.WHITE);
+
         for (FlagPiece piece : flag.pieces) {
             debugRenderer.line(piece.currentPosition, piece.intendedPosition);
         }
         debugRenderer.end();
         enableInput();
+    }
+
+    private void drawFlagPieces() {
+        for (FlagPiece piece : flag.pieces) {
+            piece.sprite.draw(batch);
+        }
     }
 
     private boolean isAbovePiece(FlagPiece piece) {
@@ -81,6 +89,11 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             flag.toggleReference();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            flag.compare();
+        }
+
         if (Gdx.input.justTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);

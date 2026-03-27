@@ -20,6 +20,12 @@ public class Flag {
         this.reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
     }
 
+    private boolean isAlmostEqual(Vector2 firstValue, Vector2 secondValue, int margin) {
+        int diffX = (int) Math.abs(secondValue.x - firstValue.x);
+        int diffY = (int) Math.abs(secondValue.y - firstValue.y);
+        return diffX < margin && diffY < margin;
+    }
+
     public void toggleReference() {
         if (this.reference_displayed) {
             this.reference_displayed = false;
@@ -28,6 +34,16 @@ public class Flag {
         }
     }
 
+    public void compare() {
+        for ( FlagPiece piece : pieces) {
+            if (!isAlmostEqual(piece.currentPosition, piece.intendedPosition, 5)) {
+                System.out.println("You lose!");
+            } else {
+                System.out.println("You win!");
+                break;
+            }
+        }
+    }
     public ArrayList<FlagPiece> loadPieces() {
         String[] files = {"black.png", "red.png", "green.png", "seal.png"};
         Vector2[] positions = {
