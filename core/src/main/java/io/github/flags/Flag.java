@@ -20,12 +20,6 @@ public class Flag {
         this.reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
     }
 
-    private boolean isAlmostEqual(Vector2 firstValue, Vector2 secondValue, int margin) {
-        int diffX = (int) Math.abs(secondValue.x - firstValue.x);
-        int diffY = (int) Math.abs(secondValue.y - firstValue.y);
-        return diffX < margin && diffY < margin;
-    }
-
     public void toggleReference() {
         if (this.reference_displayed) {
             this.reference_displayed = false;
@@ -36,12 +30,23 @@ public class Flag {
 
     public void compare() {
         for ( FlagPiece piece : pieces) {
-            if (!isAlmostEqual(piece.currentPosition, piece.intendedPosition, 5)) {
+            if (!piece.isCloseEnough()) {
                 System.out.println("You lose!");
             } else {
                 System.out.println("You win!");
                 break;
             }
+        }
+    }
+
+    public void print() {
+        for (int i = 0 ; i < pieces.size(); i++) {
+            System.out.println("Piece: " + i + ":");
+            System.out.println("difference: " + new Vector2(
+                Math.abs(pieces.get(i).intendedPosition.x - pieces.get(i).currentPosition.x),
+                Math.abs(pieces.get(i).intendedPosition.y - pieces.get(i).currentPosition.y)
+                ) + "\n"
+            );
         }
     }
     public ArrayList<FlagPiece> loadPieces() {

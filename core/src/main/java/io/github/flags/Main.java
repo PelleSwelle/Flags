@@ -25,6 +25,7 @@ public class Main extends ApplicationAdapter {
     private FlagPiece selectedPiece;
     private static ShapeRenderer debugRenderer;
     BitmapFont font;
+    private boolean isDebugEnabled;
 
     @Override
     public void create() {
@@ -39,6 +40,7 @@ public class Main extends ApplicationAdapter {
         debugRenderer = new ShapeRenderer();
         selectedPiece = null;
         font = new BitmapFont();
+        this.isDebugEnabled = false;
     }
 
     @Override
@@ -51,16 +53,17 @@ public class Main extends ApplicationAdapter {
         }
         font.draw(batch, "hello", 10, 10);
         batch.end();
+        if (isDebugEnabled) {
+            Gdx.gl.glLineWidth(1);
+            debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
+            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+            debugRenderer.setColor(Color.WHITE);
 
-        Gdx.gl.glLineWidth(1);
-        debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
-        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(Color.WHITE);
-
-        for (FlagPiece piece : flag.pieces) {
-            debugRenderer.line(piece.currentPosition, piece.intendedPosition);
+            for (FlagPiece piece : flag.pieces) {
+                debugRenderer.line(piece.currentPosition, piece.intendedPosition);
+            }
+            debugRenderer.end();
         }
-        debugRenderer.end();
         enableInput();
     }
 
@@ -90,8 +93,16 @@ public class Main extends ApplicationAdapter {
             flag.toggleReference();
         }
 
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             flag.compare();
+            if (isDebugEnabled) {
+                flag.print();
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            isDebugEnabled = !isDebugEnabled;
         }
 
         if (Gdx.input.justTouched()) {

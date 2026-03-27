@@ -14,6 +14,10 @@ public class FlagPiece {
         this.currentPosition = new Vector2(intendedPosition);
     }
 
+    public boolean isCloseEnough() {
+        return Utils.isAlmostEqual(this.currentPosition, this.intendedPosition, 5);
+    }
+
     public void setPosition(float x, float y) {
         this.currentPosition.x = x;
         this.currentPosition.y = y;
