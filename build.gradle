@@ -25,6 +25,14 @@ allprojects {
   }
 }
 
+project(":tools") {
+  apply plugin: "java"
+
+  dependencies {
+    implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+  }
+}
+
 configure(subprojects) {
   apply plugin: 'java-library'
   java.sourceCompatibility = 8
