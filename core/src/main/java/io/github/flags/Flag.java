@@ -30,7 +30,7 @@ public class Flag {
 
     public void compare() {
         for ( FlagPiece piece : pieces) {
-            if (!piece.isCloseEnough()) {
+            if (!piece.isPositionCloseEnough() || !piece.isRotationCloseEnough()) {
                 System.out.println("You lose!");
             } else {
                 System.out.println("You win!");

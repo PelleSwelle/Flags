@@ -54,17 +54,21 @@ public class Main extends ApplicationAdapter {
         font.draw(batch, "hello", 10, 10);
         batch.end();
         if (isDebugEnabled) {
-            Gdx.gl.glLineWidth(1);
-            debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
-            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-            debugRenderer.setColor(Color.WHITE);
-
-            for (FlagPiece piece : flag.pieces) {
-                debugRenderer.line(piece.currentPosition, piece.intendedPosition);
-            }
-            debugRenderer.end();
+            drawDebugLines();
         }
         enableInput();
+    }
+
+    private void drawDebugLines() {
+        Gdx.gl.glLineWidth(1);
+        debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.WHITE);
+
+        for (FlagPiece piece : flag.pieces) {
+            debugRenderer.line(piece.currentPosition, piece.intendedPosition);
+        }
+        debugRenderer.end();
     }
 
     private void drawFlagPieces() {
@@ -78,14 +82,6 @@ public class Main extends ApplicationAdapter {
         touchPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
         touchPos.y > piece.sprite.getY() &&
         touchPos.y < piece.sprite.getY() + piece.sprite.getHeight();
-    }
-
-    private static void drawDebugLine(Vector2 start, Vector2 end) {
-        Gdx.gl.glLineWidth(1);
-        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(Color.WHITE);
-        debugRenderer.line(start, end);
-        debugRenderer.end();
     }
 
     private void enableInput() {

@@ -14,8 +14,12 @@ public class FlagPiece {
         this.currentPosition = new Vector2(intendedPosition);
     }
 
-    public boolean isCloseEnough() {
+    public boolean isPositionCloseEnough() {
         return Utils.isAlmostEqual(this.currentPosition, this.intendedPosition, 5);
+    }
+
+    public boolean isRotationCloseEnough() {
+        return this.sprite.getRotation() < 5 || this.sprite.getRotation() > 355;
     }
 
     public void setPosition(float x, float y) {
