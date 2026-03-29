@@ -101,6 +101,14 @@ public class Main extends ApplicationAdapter {
             isDebugEnabled = !isDebugEnabled;
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            for (FlagPiece piece : flag.pieces) {
+                if (isAbovePiece(piece)) {
+                    flag.moveUpPiece(piece);
+                }
+            }
+        }
+
         if (Gdx.input.justTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
