@@ -74,5 +74,15 @@ public class Flag {
         return pieces;
     }
 
-//    TODO: public void moveUpSprite(Sprite sprite) {}
+    public void moveUpPiece(FlagPiece piece) {
+        for (int i = 1; i < pieces.size(); i ++) {
+            if (pieces.get(i) == piece) {
+                FlagPiece temp = pieces.get(i - 1); // Save value before overwrite.
+                pieces.set(i - 1, pieces.get(i)); // First half of swap.
+                pieces.set(i, temp); // Final operation for swap.
+                System.out.println("moved " + piece + "up");
+            }
+        }
+
+    }
 }
