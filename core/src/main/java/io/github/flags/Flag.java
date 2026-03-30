@@ -2,10 +2,11 @@ package io.github.flags;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 
-public class Flag {
+public class Flag extends Actor {
     public String country;
     public Sprite reference;
     public ArrayList<FlagPiece> pieces;
@@ -62,7 +63,8 @@ public class Flag {
             pieces.add(
                 new FlagPiece(
                     new Sprite(new Texture(path+this.country+"/pieces/" + files[i])),
-                    positions[i]
+                    positions[i],
+                    i
                 )
             );
         }
@@ -72,17 +74,5 @@ public class Flag {
             piece.setPosition(piece.intendedPosition.x, piece.intendedPosition.y);
         }
         return pieces;
-    }
-
-    public void moveUpPiece(FlagPiece piece) {
-        for (int i = 1; i < pieces.size(); i ++) {
-            if (pieces.get(i) == piece) {
-                FlagPiece temp = pieces.get(i - 1); // Save value before overwrite.
-                pieces.set(i - 1, pieces.get(i)); // First half of swap.
-                pieces.set(i, temp); // Final operation for swap.
-                System.out.println("moved " + piece + "up");
-            }
-        }
-
     }
 }
