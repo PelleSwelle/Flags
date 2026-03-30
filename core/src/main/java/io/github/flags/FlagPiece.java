@@ -2,11 +2,13 @@ package io.github.flags;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class FlagPiece {
     Sprite sprite;
     public Vector2 currentPosition;
     public Vector2 intendedPosition;
+
 
     public FlagPiece(Sprite sprite, Vector2 intendedPosition) {
         this.sprite = sprite;

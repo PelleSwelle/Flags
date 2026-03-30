@@ -26,6 +26,8 @@ public class Main extends ApplicationAdapter {
     private static ShapeRenderer debugRenderer;
     BitmapFont font;
     private boolean isDebugEnabled;
+    private Vector2 cursorOffset;
+
 
     @Override
     public void create() {
@@ -41,6 +43,7 @@ public class Main extends ApplicationAdapter {
         selectedPiece = null;
         font = new BitmapFont();
         this.isDebugEnabled = false;
+        cursorOffset = new Vector2();
     }
 
     @Override
@@ -115,6 +118,11 @@ public class Main extends ApplicationAdapter {
 
             for (FlagPiece piece : flag.pieces) {
                 if (isAbovePiece(piece)) {
+                    // TODO: get local coordinates of piece.
+                    cursorOffset.set(
+                        touchPos.x - piece.sprite.getX(),
+                        touchPos.y - piece.sprite.getY()
+                    );
                     selectedPiece = piece;
                 }
             }
@@ -131,7 +139,7 @@ public class Main extends ApplicationAdapter {
 //                MOVE SPRITE
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos);
-                selectedPiece.setPosition(touchPos.x, touchPos.y);
+                selectedPiece.setPosition(touchPos.x - cursorOffset.x, touchPos.y - cursorOffset.y);
             }
         }
 
