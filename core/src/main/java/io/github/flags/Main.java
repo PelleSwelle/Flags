@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -27,39 +29,57 @@ public class Main extends ApplicationAdapter {
     BitmapFont font;
     private boolean isDebugEnabled;
     private Vector2 cursorOffset;
-
+    private ShapeRenderer cursor;
+    private Vector2 cursorPos;
+    private Color cursorColor;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
         flag = new Flag("afghanistan");
-        flag.loadPieces();
         touchPos = new Vector2();
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
         debugRenderer = new ShapeRenderer();
+        cursor = new ShapeRenderer();
         selectedPiece = null;
         font = new BitmapFont();
         this.isDebugEnabled = false;
         cursorOffset = new Vector2();
+        cursorPos = new Vector2();
+        cursorColor = Color.CORAL;
+
+        for (FlagPiece piece : flag.pieces) {
+            stage.addActor(piece);
+//            piece.sprite.draw(batch);
+        }
     }
 
     @Override
     public void render() {
+        cursorPos.x = Gdx.input.getX();
+        cursorPos.y = Gdx.input.getY();
+        viewport.unproject(cursorPos);
+
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        float delta = Gdx.graphics.getDeltaTime();
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        drawFlagPieces();
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
         font.draw(batch, "hello", 10, 10);
+        drawCursor();
         batch.end();
         if (isDebugEnabled) {
             drawDebugLines();
         }
         enableInput();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     private void drawDebugLines() {
@@ -74,17 +94,36 @@ public class Main extends ApplicationAdapter {
         debugRenderer.end();
     }
 
-    private void drawFlagPieces() {
-        for (FlagPiece piece : flag.pieces) {
-            piece.sprite.draw(batch);
+    private void drawCursor() {
+        cursor.setProjectionMatrix(viewport.getCamera().combined);
+        cursor.begin(ShapeRenderer.ShapeType.Filled);
+        if (isAboveAnyPiece()) {
+            cursor.setColor(Color.BLUE);
+        } else {
+            cursor.setColor(Color.DARK_GRAY);
         }
+        cursor.circle(cursorPos.x, cursorPos.y, 15);
+        cursor.end();
+    }
+
+    private boolean isAboveAnyPiece() {
+        boolean isAbove = false;
+        for (FlagPiece piece : flag.pieces) {
+            if (isAbovePiece(piece)) {
+                isAbove = true;
+                break;
+            } else {
+                isAbove = false;
+            }
+        }
+        return isAbove;
     }
 
     private boolean isAbovePiece(FlagPiece piece) {
-        return touchPos.x > piece.sprite.getX() &&
-        touchPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
-        touchPos.y > piece.sprite.getY() &&
-        touchPos.y < piece.sprite.getY() + piece.sprite.getHeight();
+        return cursorPos.x > piece.sprite.getX() &&
+        cursorPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
+        cursorPos.y > piece.sprite.getY() &&
+        cursorPos.y < piece.sprite.getY() + piece.sprite.getHeight();
     }
 
     private void enableInput() {
@@ -107,7 +146,10 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             for (FlagPiece piece : flag.pieces) {
                 if (isAbovePiece(piece)) {
-                    flag.moveUpPiece(piece);
+                    if (piece.getZIndex() >= 0) {
+                        System.out.println("moving from " + piece.getZIndex() + " to " + (piece.getZIndex()-1));
+                        piece.setZIndex(piece.getZIndex() + 1 );
+                    }
                 }
             }
         }
