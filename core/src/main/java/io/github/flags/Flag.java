@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 
-public class Flag extends Actor {
+public class Flag {
     public String country;
     public Sprite reference;
     public ArrayList<FlagPiece> pieces;
@@ -69,9 +69,11 @@ public class Flag extends Actor {
             );
         }
 
+        System.out.println("coordinates: ");
         for (FlagPiece piece : pieces) {
 //            TODO: make this the width and height of the window.
             piece.setPosition(piece.intendedPosition.x, piece.intendedPosition.y);
+            System.out.println(piece.getX() + " " + piece.getY());
         }
         return pieces;
     }

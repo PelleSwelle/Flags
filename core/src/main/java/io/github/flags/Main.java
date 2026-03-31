@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -36,11 +38,9 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
         flag = new Flag("afghanistan");
-        flag.loadPieces();
         touchPos = new Vector2();
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
-        stage.addActor(flag);
         Gdx.input.setInputProcessor(stage);
         debugRenderer = new ShapeRenderer();
         cursor = new ShapeRenderer();
@@ -50,6 +50,11 @@ public class Main extends ApplicationAdapter {
         cursorOffset = new Vector2();
         cursorPos = new Vector2();
         cursorColor = Color.CORAL;
+
+        for (FlagPiece piece : flag.pieces) {
+            stage.addActor(piece);
+//            piece.sprite.draw(batch);
+        }
     }
 
     @Override
@@ -59,18 +64,22 @@ public class Main extends ApplicationAdapter {
         viewport.unproject(cursorPos);
 
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        float delta = Gdx.graphics.getDeltaTime();
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        drawFlagPieces();
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
         font.draw(batch, "hello", 10, 10);
-        batch.end();
         drawCursor();
+        batch.end();
         if (isDebugEnabled) {
             drawDebugLines();
         }
         enableInput();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     private void drawDebugLines() {
@@ -93,14 +102,8 @@ public class Main extends ApplicationAdapter {
         } else {
             cursor.setColor(Color.DARK_GRAY);
         }
-        cursor.circle(cursorPos.x, cursorPos.y, 5);
+        cursor.circle(cursorPos.x, cursorPos.y, 15);
         cursor.end();
-    }
-
-    private void drawFlagPieces() {
-        for (FlagPiece piece : flag.pieces) {
-            piece.sprite.draw(batch);
-        }
     }
 
     private boolean isAboveAnyPiece() {
@@ -143,9 +146,9 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             for (FlagPiece piece : flag.pieces) {
                 if (isAbovePiece(piece)) {
-                    if (piece.getZIndex() >= 1) {
+                    if (piece.getZIndex() >= 0) {
                         System.out.println("moving from " + piece.getZIndex() + " to " + (piece.getZIndex()-1));
-                        piece.setZIndex(piece.getZIndex() - 1 );
+                        piece.setZIndex(piece.getZIndex() + 1 );
                     }
                 }
             }
