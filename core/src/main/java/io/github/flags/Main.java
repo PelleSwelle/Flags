@@ -30,10 +30,11 @@ public class Main extends ApplicationAdapter {
     private ShapeRenderer cursor;
     private Vector2 cursorPosition;
     private Color cursorColor;
-    private Table table;
+    private static Table table;
     private Label testLabel;
     private TextButton checkButton;
-    private UI ui;
+    private static Label countryNameLabel;
+    private static UI ui;
 
     @Override
     public void create() {
@@ -41,7 +42,10 @@ public class Main extends ApplicationAdapter {
         checkButton = new TextButton("Check", ui.skin, "default");
         checkButton.pad(20);
         checkButton.addListener(checkCorrectness());
+        flag = new Flag("afghanistan");
 
+        countryNameLabel = new Label(flag.country, ui.skin);
+        countryNameLabel.setVisible(false);
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
         table = new Table();
@@ -51,6 +55,7 @@ public class Main extends ApplicationAdapter {
         table.setDebug(true);
         table.add(checkButton);
         table.row();
+        table.add(countryNameLabel);
         table.right().top();
 
         batch = new SpriteBatch();
@@ -60,7 +65,6 @@ public class Main extends ApplicationAdapter {
 
         this.isDebugEnabled = false;
 
-        flag = new Flag("afghanistan");
         // CURSOR
         cursorOffset = new Vector2();
         cursorPosition = new Vector2();
@@ -70,13 +74,7 @@ public class Main extends ApplicationAdapter {
 
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
-//            piece.sprite.draw(batch);
         }
-        int Help_Guides = 12;
-        int row_height = Gdx.graphics.getWidth() / 12;
-        int col_width = Gdx.graphics.getWidth() / 12;
-
-
 
         drawCursor();
     }
@@ -86,6 +84,8 @@ public class Main extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 flag.compare();
+                System.out.println("flag is solved? " + flag.isSolved);
+                countryNameLabel.setVisible(flag.isSolved);
             }
         };
     }
@@ -100,6 +100,7 @@ public class Main extends ApplicationAdapter {
 
         float delta = Gdx.graphics.getDeltaTime();
         batch.begin();
+
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
@@ -118,6 +119,7 @@ public class Main extends ApplicationAdapter {
 
         cursor.setProjectionMatrix(viewport.getCamera().combined);
         cursor.begin(ShapeRenderer.ShapeType.Filled);
+
         if (isAboveAnyPiece()) {
             cursor.setColor(Color.BLUE);
         } else {
