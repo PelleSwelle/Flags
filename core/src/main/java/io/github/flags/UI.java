@@ -19,9 +19,8 @@ public class UI {
 
     public UI() {
         this.skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
-        this.font = this.generateFont();
+        this.font = this.generateFont(40);
         this.skin.add("default-font", font);
-
         // TEXT BUTTON STYLE
         this.textButtonStyle = new TextButtonStyle();
         this.textButtonStyle.font = this.font;
@@ -34,10 +33,11 @@ public class UI {
         this.skin = new Skin(Gdx.files.internal(path));
     }
 
-    public BitmapFont generateFont() {
+    public BitmapFont generateFont(int size) {
         String fontPath = "truetypefont/DroidSerif-Regular.ttf";
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
+        fontParameter.size = size;
         return generator.generateFont(fontParameter);
     }
 

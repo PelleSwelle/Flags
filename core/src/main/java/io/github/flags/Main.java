@@ -3,25 +3,18 @@ package io.github.flags;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 public class Main extends ApplicationAdapter {
@@ -39,21 +32,31 @@ public class Main extends ApplicationAdapter {
     private Color cursorColor;
     private Table table;
     private Label testLabel;
-    private TextButton textButton;
+    private TextButton checkButton;
     private UI ui;
 
     @Override
     public void create() {
         ui = new UI();
-        textButton = new TextButton("I am a button", ui.skin, "default");
+        checkButton = new TextButton("Check", ui.skin, "default");
+        checkButton.pad(20);
+        checkButton.addListener(checkCorrectness());
+
+        viewport = new FitViewport(1028, 800);
+        stage = new Stage(viewport);
+        table = new Table();
+        stage.addActor(table);
+
+        table.setFillParent(true);
+        table.setDebug(true);
+        table.add(checkButton);
+        table.row();
+        table.right().top();
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(1028, 800);
         touchPos = new Vector2();
 
-        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        table = new Table();
 
         this.isDebugEnabled = false;
 
@@ -73,17 +76,18 @@ public class Main extends ApplicationAdapter {
         int row_height = Gdx.graphics.getWidth() / 12;
         int col_width = Gdx.graphics.getWidth() / 12;
 
-        Label theLabel = new Label("True Type Font (.ttf) - Gdx FreeType", TextRenderer.getLabelStyle());
-        theLabel.setSize(Gdx.graphics.getWidth()/Help_Guides*5,row_height);
-        theLabel.setPosition(col_width*2,Gdx.graphics.getHeight()-row_height*4);
 
-        stage.addActor(table);
-        table.add(theLabel);
-        table.add(textButton);
-        table.setFillParent(true);
-        table.setDebug(true);
 
         drawCursor();
+    }
+
+    private static ChangeListener checkCorrectness() {
+        return new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("pressed the checkedButton");
+            }
+        };
     }
 
     @Override
