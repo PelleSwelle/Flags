@@ -4,74 +4,105 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+
 public class Main extends ApplicationAdapter {
     private Stage stage;
     private SpriteBatch batch;
     private Texture image;
-    private Flag flag;
+    private static Flag flag;
     private Vector2 touchPos;
     private FitViewport viewport;
     private FlagPiece selectedPiece;
-    private static ShapeRenderer debugRenderer;
-    BitmapFont font;
     private boolean isDebugEnabled;
     private Vector2 cursorOffset;
     private ShapeRenderer cursor;
-    private Vector2 cursorPos;
+    private Vector2 cursorPosition;
     private Color cursorColor;
+    private Table table;
+    private Label testLabel;
+    private TextButton checkButton;
+    private UI ui;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
-        flag = new Flag("afghanistan");
-        touchPos = new Vector2();
+        ui = new UI();
+        checkButton = new TextButton("Check", ui.skin, "default");
+        checkButton.pad(20);
+        checkButton.addListener(checkCorrectness());
+
         viewport = new FitViewport(1028, 800);
         stage = new Stage(viewport);
+        table = new Table();
+        stage.addActor(table);
+
+        table.setFillParent(true);
+        table.setDebug(true);
+        table.add(checkButton);
+        table.row();
+        table.right().top();
+
+        batch = new SpriteBatch();
+        touchPos = new Vector2();
+
         Gdx.input.setInputProcessor(stage);
-        debugRenderer = new ShapeRenderer();
-        cursor = new ShapeRenderer();
-        selectedPiece = null;
-        font = new BitmapFont();
+
         this.isDebugEnabled = false;
+
+        flag = new Flag("afghanistan");
+        // CURSOR
         cursorOffset = new Vector2();
-        cursorPos = new Vector2();
+        cursorPosition = new Vector2();
         cursorColor = Color.CORAL;
+
+        selectedPiece = null;
 
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
 //            piece.sprite.draw(batch);
         }
+        int Help_Guides = 12;
+        int row_height = Gdx.graphics.getWidth() / 12;
+        int col_width = Gdx.graphics.getWidth() / 12;
+
+
+
+        drawCursor();
+    }
+
+    private static ChangeListener checkCorrectness() {
+        return new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                flag.compare();
+            }
+        };
     }
 
     @Override
     public void render() {
-        cursorPos.x = Gdx.input.getX();
-        cursorPos.y = Gdx.input.getY();
-        viewport.unproject(cursorPos);
+        cursorPosition.x = Gdx.input.getX();
+        cursorPosition.y = Gdx.input.getY();
+        viewport.unproject(cursorPosition);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
 
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         float delta = Gdx.graphics.getDeltaTime();
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
-        font.draw(batch, "hello", 10, 10);
-        drawCursor();
         batch.end();
         if (isDebugEnabled) {
             drawDebugLines();
@@ -82,8 +113,31 @@ public class Main extends ApplicationAdapter {
         stage.draw();
     }
 
-    private void drawDebugLines() {
+    public void drawCursor() {
+        ShapeRenderer cursor = new ShapeRenderer();
+
+        cursor.setProjectionMatrix(viewport.getCamera().combined);
+        cursor.begin(ShapeRenderer.ShapeType.Filled);
+        if (isAboveAnyPiece()) {
+            cursor.setColor(Color.BLUE);
+        } else {
+            cursor.setColor(Color.DARK_GRAY);
+        }
+        cursor.circle(cursorPosition.x, cursorPosition.y, 15);
+        cursor.end();
+    }
+
+    private boolean isAbovePiece(FlagPiece piece) {
+        return cursorPosition.x > piece.sprite.getX() &&
+            cursorPosition.x < piece.sprite.getX() + piece.sprite.getWidth() &&
+            cursorPosition.y > piece.sprite.getY() &&
+            cursorPosition.y < piece.sprite.getY() + piece.sprite.getHeight();
+    }
+
+    public void drawDebugLines() {
+        ShapeRenderer debugRenderer = new ShapeRenderer();
         Gdx.gl.glLineWidth(1);
+
         debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
         debugRenderer.setColor(Color.WHITE);
@@ -94,17 +148,6 @@ public class Main extends ApplicationAdapter {
         debugRenderer.end();
     }
 
-    private void drawCursor() {
-        cursor.setProjectionMatrix(viewport.getCamera().combined);
-        cursor.begin(ShapeRenderer.ShapeType.Filled);
-        if (isAboveAnyPiece()) {
-            cursor.setColor(Color.BLUE);
-        } else {
-            cursor.setColor(Color.DARK_GRAY);
-        }
-        cursor.circle(cursorPos.x, cursorPos.y, 15);
-        cursor.end();
-    }
 
     private boolean isAboveAnyPiece() {
         boolean isAbove = false;
@@ -117,13 +160,6 @@ public class Main extends ApplicationAdapter {
             }
         }
         return isAbove;
-    }
-
-    private boolean isAbovePiece(FlagPiece piece) {
-        return cursorPos.x > piece.sprite.getX() &&
-        cursorPos.x < piece.sprite.getX() + piece.sprite.getWidth() &&
-        cursorPos.y > piece.sprite.getY() &&
-        cursorPos.y < piece.sprite.getY() + piece.sprite.getHeight();
     }
 
     private void enableInput() {
