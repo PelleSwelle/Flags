@@ -3,6 +3,7 @@ package io.github.flags;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,6 +54,7 @@ public class Main extends ApplicationAdapter {
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
+        table = new Table();
 
         this.isDebugEnabled = false;
 
@@ -68,29 +70,16 @@ public class Main extends ApplicationAdapter {
             stage.addActor(piece);
 //            piece.sprite.draw(batch);
         }
-
         int Help_Guides = 12;
         int row_height = Gdx.graphics.getWidth() / 12;
         int col_width = Gdx.graphics.getWidth() / 12;
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("truetypefont/DroidSerif-Regular.ttf"));
-        FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 30;
-        parameter.borderWidth = 1;
-        parameter.color = Color.YELLOW;
-        parameter.shadowOffsetX = 3;
-        parameter.shadowOffsetY = 3;
-        parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);
-        BitmapFont font24 = generator.generateFont(parameter); // font size 24 pixels
-        generator.dispose();
+        Label theLabel = new Label("True Type Font (.ttf) - Gdx FreeType", TextRenderer.getLabelStyle());
+        theLabel.setSize(Gdx.graphics.getWidth()/Help_Guides*5,row_height);
+        theLabel.setPosition(col_width*2,Gdx.graphics.getHeight()-row_height*4);
+        stage.addActor(table);
+        table.add(theLabel);
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font24;
-
-        Label label2 = new Label("True Type Font (.ttf) - Gdx FreeType",labelStyle);
-        label2.setSize(Gdx.graphics.getWidth()/Help_Guides*5,row_height);
-        label2.setPosition(col_width*2,Gdx.graphics.getHeight()-row_height*4);
-        stage.addActor(label2);
         drawCursor();
 
     }
@@ -101,7 +90,7 @@ public class Main extends ApplicationAdapter {
         cursorPosition.y = Gdx.input.getY();
         viewport.unproject(cursorPosition);
         Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
 
         float delta = Gdx.graphics.getDeltaTime();
         batch.begin();
