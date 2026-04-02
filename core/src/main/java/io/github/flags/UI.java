@@ -6,16 +6,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.sun.tools.javac.util.StringUtils;
 
 public class UI {
     public Skin skin;
     public BitmapFont font;
     public TextButtonStyle textButtonStyle;
+    public Label.LabelStyle labelStyle;
 
     public UI() {
         this.skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
@@ -27,6 +27,14 @@ public class UI {
         this.textButtonStyle.up = this.skin.newDrawable("white", Color.LIGHT_GRAY);
         this.textButtonStyle.down = this.skin.newDrawable("white", Color.GRAY);
         this.skin.add("default", textButtonStyle);
+
+        this.labelStyle = new Label.LabelStyle();
+        this.labelStyle.font = this.font;
+    }
+
+    public void displayCountryLabel(String countryName, Table table) {
+        Label nameLabel = new Label(countryName, this.skin); // TODO: capitalize this
+        table.add(nameLabel);
     }
 
     public void setSkin(String path) {

@@ -30,10 +30,10 @@ public class Main extends ApplicationAdapter {
     private ShapeRenderer cursor;
     private Vector2 cursorPosition;
     private Color cursorColor;
-    private Table table;
+    private static Table table;
     private Label testLabel;
     private TextButton checkButton;
-    private UI ui;
+    private static UI ui;
 
     @Override
     public void create() {
@@ -86,6 +86,7 @@ public class Main extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 flag.compare();
+                ui.displayCountryLabel(flag.country, table);
             }
         };
     }
