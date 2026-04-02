@@ -32,33 +32,20 @@ public class Main extends ApplicationAdapter {
     private Vector2 touchPos;
     private FitViewport viewport;
     private FlagPiece selectedPiece;
-    BitmapFont font;
     private boolean isDebugEnabled;
     private Vector2 cursorOffset;
     private ShapeRenderer cursor;
     private Vector2 cursorPosition;
     private Color cursorColor;
     private Table table;
-    private Skin skin;
     private Label testLabel;
     private TextButton textButton;
+    private UI ui;
 
     @Override
     public void create() {
-        skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
-        FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-
-        font = new FreeTypeFontGenerator(Gdx.files.internal("truetypefont/DroidSerif-Regular.ttf")).generateFont(fontParameter);
-
-        skin.add("default-font", font);
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.up = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textButtonStyle.down = skin.newDrawable("white", Color.GRAY);
-
-        skin.add("default", textButtonStyle);
-        textButton = new TextButton("I am a button", skin, "default");
+        ui = new UI();
+        textButton = new TextButton("I am a button", ui.skin, "default");
 
         batch = new SpriteBatch();
         viewport = new FitViewport(1028, 800);
@@ -66,7 +53,6 @@ public class Main extends ApplicationAdapter {
 
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        font = new BitmapFont();
         table = new Table();
 
         this.isDebugEnabled = false;
@@ -113,7 +99,6 @@ public class Main extends ApplicationAdapter {
         if (flag.reference_displayed) {
             flag.reference.draw(batch);
         }
-        font.draw(batch, "hello", 10, 10);
         batch.end();
         if (isDebugEnabled) {
             drawDebugLines();
