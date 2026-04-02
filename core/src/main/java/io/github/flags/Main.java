@@ -21,7 +21,7 @@ public class Main extends ApplicationAdapter {
     private Stage stage;
     private SpriteBatch batch;
     private Texture image;
-    private Flag flag;
+    private static Flag flag;
     private Vector2 touchPos;
     private FitViewport viewport;
     private FlagPiece selectedPiece;
@@ -85,7 +85,7 @@ public class Main extends ApplicationAdapter {
         return new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("pressed the checkedButton");
+                flag.compare();
             }
         };
     }
