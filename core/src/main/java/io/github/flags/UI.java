@@ -16,6 +16,7 @@ public class UI {
     public BitmapFont font;
     public TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
+    public Label countryNameLabel;
 
     public UI() {
         this.skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
@@ -30,15 +31,12 @@ public class UI {
 
         this.labelStyle = new Label.LabelStyle();
         this.labelStyle.font = this.font;
+//        this.skin.add("default", this.labelStyle);
     }
 
     public void displayCountryLabel(String countryName, Table table) {
         Label nameLabel = new Label(countryName, this.skin); // TODO: capitalize this
         table.add(nameLabel);
-    }
-
-    public void setSkin(String path) {
-        this.skin = new Skin(Gdx.files.internal(path));
     }
 
     public BitmapFont generateFont(int size) {

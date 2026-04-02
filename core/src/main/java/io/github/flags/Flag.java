@@ -12,6 +12,7 @@ public class Flag {
     public ArrayList<FlagPiece> pieces;
     private final String path = "flags/";
     public boolean reference_displayed = false;
+    public boolean isSolved = false;
 
 //    TODO: selection of country
     public Flag(String country) {
@@ -22,19 +23,17 @@ public class Flag {
     }
 
     public void toggleReference() {
-        if (this.reference_displayed) {
-            this.reference_displayed = false;
-        } else {
-            this.reference_displayed = true;
-        }
+        this.reference_displayed = !this.reference_displayed;
     }
 
     public void compare() {
+//        TODO: this does not work anymore after converting to actors.
         for ( FlagPiece piece : pieces) {
             if (!piece.isPositionCloseEnough() || !piece.isRotationCloseEnough()) {
                 System.out.println("You lose!");
             } else {
                 System.out.println("You win!");
+                isSolved = true;
                 break;
             }
         }
