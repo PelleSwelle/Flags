@@ -15,10 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -44,9 +41,25 @@ public class Main extends ApplicationAdapter {
     private Table table;
     private Skin skin;
     private Label testLabel;
+    private TextButton textButton;
 
     @Override
     public void create() {
+        skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
+        FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
+
+        font = new FreeTypeFontGenerator(Gdx.files.internal("truetypefont/DroidSerif-Regular.ttf")).generateFont(fontParameter);
+
+        skin.add("default-font", font);
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.up = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.GRAY);
+
+        skin.add("default", textButtonStyle);
+        textButton = new TextButton("I am a button", skin, "default");
+
         batch = new SpriteBatch();
         viewport = new FitViewport(1028, 800);
         touchPos = new Vector2();
@@ -77,11 +90,14 @@ public class Main extends ApplicationAdapter {
         Label theLabel = new Label("True Type Font (.ttf) - Gdx FreeType", TextRenderer.getLabelStyle());
         theLabel.setSize(Gdx.graphics.getWidth()/Help_Guides*5,row_height);
         theLabel.setPosition(col_width*2,Gdx.graphics.getHeight()-row_height*4);
+
         stage.addActor(table);
         table.add(theLabel);
+        table.add(textButton);
+        table.setFillParent(true);
+        table.setDebug(true);
 
         drawCursor();
-
     }
 
     @Override
