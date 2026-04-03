@@ -169,7 +169,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        parent.viewport.update(width, height);
     }
 
     @Override
