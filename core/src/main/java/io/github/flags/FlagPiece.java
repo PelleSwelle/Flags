@@ -21,7 +21,7 @@ public class FlagPiece extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        this.sprite.setPosition(getX(), getY());
+        this.setPosition(getX(), getY());
         sprite.setRotation(getRotation());
         this.sprite.draw(batch);
     }
@@ -37,15 +37,4 @@ public class FlagPiece extends Actor {
     public boolean isRotationCloseEnough() {
         return this.sprite.getRotation() < 5 || this.sprite.getRotation() > 355;
     }
-
-//    public void setPosition(float x, float y) {
-//        this.currentPosition.x = x;
-//        this.currentPosition.y = y;
-//
-//        this.sprite.setPosition(currentPosition.x, currentPosition.y);
-//    }
-//
-//    public void setRotation(float degrees) {
-//        this.sprite.setRotation(degrees);
-//    }
 }

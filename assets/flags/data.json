@@ -1,0 +1,28 @@
+{
+  "afghanistan":
+  {
+    "pieces":
+    [
+      {
+        "file": "black.png",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "file": "red.png",
+        "x": 300,
+        "y": 0
+      },
+      {
+        "file": "green.png",
+        "x": 600,
+        "y": 0
+      },
+      {
+        "file": "seal.png",
+        "x": 255.99,
+        "y": 60.41
+      }
+    ]
+  }
+}
