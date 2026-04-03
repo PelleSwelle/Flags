@@ -3,8 +3,6 @@ package io.github.flags;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class MainScreen implements Screen {
     final Main parent;
@@ -59,8 +56,6 @@ public class MainScreen implements Screen {
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
-
-        drawCursor();
     }
     @Override
     public void show() {
@@ -127,33 +122,11 @@ public class MainScreen implements Screen {
         return isAbove;
     }
 
-
-    public void drawCursor() {
-        cursorPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-
-        ShapeRenderer cursor = new ShapeRenderer();
-
-        cursor.setProjectionMatrix(parent.viewport.getCamera().combined);
-        cursor.begin(ShapeRenderer.ShapeType.Filled);
-
-        if (isAboveAnyPiece()) {
-            cursor.setColor(Color.BLUE);
-        } else {
-            cursor.setColor(Color.DARK_GRAY);
-        }
-        cursor.circle(cursorPosition.x, cursorPosition.y, 15);
-        cursor.end();
-    }
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
-        parent.viewport.unproject(cursorPosition);
         parent.batch.setProjectionMatrix(parent.viewport.getCamera().combined);
-//        parent.viewport.apply();
-//        Gdx.gl.glClearColor(1, 1, 1, 1);
 
-//        float delta = Gdx.graphics.getDeltaTime();
         parent.batch.begin();
 
         if (flag.reference_displayed) {

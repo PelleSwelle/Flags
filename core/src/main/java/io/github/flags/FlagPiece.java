@@ -1,30 +1,21 @@
 package io.github.flags;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class FlagPiece extends Actor {
     Sprite sprite;
     public Vector2 intendedPosition;
-    private Vector2 dragOffset;
-    TextureRegion region;
 
     public FlagPiece(Sprite sprite, Vector2 intendedPosition, int zIndex) {
         this.sprite = sprite;
         this.intendedPosition = intendedPosition;
         this.setPosition(intendedPosition.x, intendedPosition.y);
         this.setZIndex(zIndex);
-        this.dragOffset = new Vector2();
         this.setSize(sprite.getWidth(), sprite.getHeight());
 
         addListener(new InputListener() {
