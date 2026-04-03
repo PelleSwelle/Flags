@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -21,13 +20,11 @@ public class Main extends ApplicationAdapter {
     private Stage stage;
     private SpriteBatch batch;
     private static Flag flag;
-    private Vector2 touchPos;
     private FitViewport viewport;
     private boolean isDebugEnabled;
     private ShapeRenderer cursor;
     private Vector2 cursorPosition;
     private static Table table;
-    private Label testLabel;
     private TextButton checkButton;
     private static Label countryNameLabel;
     private static UI ui;
@@ -55,7 +52,6 @@ public class Main extends ApplicationAdapter {
         table.right().top();
 
         batch = new SpriteBatch();
-        touchPos = new Vector2();
 
         Gdx.input.setInputProcessor(stage);
 
