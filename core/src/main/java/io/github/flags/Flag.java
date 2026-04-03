@@ -47,8 +47,8 @@ public class Flag {
         for (int i = 0 ; i < pieces.size(); i++) {
             System.out.println("Piece: " + i + ":");
             System.out.println("difference: " + new Vector2(
-                Math.abs(pieces.get(i).intendedPosition.x - pieces.get(i).currentPosition.x),
-                Math.abs(pieces.get(i).intendedPosition.y - pieces.get(i).currentPosition.y)
+                Math.abs(pieces.get(i).intendedPosition.x - pieces.get(i).getX()),
+                Math.abs(pieces.get(i).intendedPosition.y - pieces.get(i).getY())
                 ) + "\n"
             );
         }
@@ -59,7 +59,11 @@ public class Flag {
 
         // Load and parse the JSON file
         JsonValue root = json.fromJson(null, Gdx.files.internal(jsonPath));
+        System.out.println("root");
+        System.out.println(root);
         JsonValue countryData = root.get(this.country);
+        System.out.println("countryData");
+        System.out.println(countryData);
 
         if (countryData == null) {
             throw new GdxRuntimeException("Country not found: " + this.country);
@@ -73,9 +77,11 @@ public class Flag {
             float x = pieceData.getFloat("x");
             float y = pieceData.getFloat("y");
 
-            pieces.add(new FlagPiece(
-                new Sprite(new Texture(path + this.country + "/pieces/" + file)),
-                new Vector2(x, y),
+            pieces.add(
+                new FlagPiece(
+                    new Sprite(
+                        new Texture(path + this.country + "/pieces/" + file)),
+                    new Vector2(x, y),
                 pieces.size()
             ));
         }

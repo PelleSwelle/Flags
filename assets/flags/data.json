@@ -1,8 +1,6 @@
 {
-  "afghanistan":
-  {
-    "pieces":
-    [
+  "afghanistan": {
+    "pieces": [
       {
         "file": "black.png",
         "x": 0,
@@ -22,6 +20,35 @@
         "file": "seal.png",
         "x": 255.99,
         "y": 60.41
+      }
+    ]
+  },
+  "iceland": {
+    "pieces": [
+      {
+        "file": "flag.png",
+        "x": 288,
+        "y": 0
+      },
+      {
+        "file": "Vector 19.png",
+        "x": 0,
+        "y": 288
+      },
+      {
+        "file": "Vector 22.png",
+        "x": 0,
+        "y": 252.39
+      },
+      {
+        "file": "Vector 21.png",
+        "x": 252,
+        "y": 0
+      },
+      {
+        "file":"Vector.png",
+        "x": 0,
+        "y": 0
       }
     ]
   }
