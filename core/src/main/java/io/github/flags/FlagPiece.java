@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class FlagPiece extends Actor {
     Sprite sprite;
@@ -24,25 +25,26 @@ public class FlagPiece extends Actor {
         this.setPosition(intendedPosition.x, intendedPosition.y);
         this.setZIndex(zIndex);
         this.dragOffset = new Vector2();
+        this.setSize(sprite.getWidth(), sprite.getHeight());
 
-//        addListener(new InputListener() {
-//            @Override
-//            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//                dragOffset.set(x - getX(), y - getY());
-//                System.out.println("touch down");
-//                return true;
-//            }
-//
-//            @Override
-//            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-//                setPosition(x - dragOffset.x, y - dragOffset.y);
-//            }
-//
-//            @Override
-//            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-//                currentPosition.set(getX(), getY());
-//            }
-//        });
+        addListener(new InputListener() {
+            private float dragStartX, dragStartY;
+            private float actorStartX, actorStartY;
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                dragStartX = event.getStageX();
+                dragStartY = event.getStageY();
+                actorStartX = getX();
+                actorStartY = getY();
+                return true;
+            }
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                float currentX = event.getStageX();
+                float currentY = event.getStageY();
+                setPosition(actorStartX + (currentX - dragStartX), actorStartY + (currentY - dragStartY));
+            }
+        });
     }
 
     @Override

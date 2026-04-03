@@ -20,16 +20,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Main extends ApplicationAdapter {
     private Stage stage;
     private SpriteBatch batch;
-    private Texture image;
     private static Flag flag;
     private Vector2 touchPos;
     private FitViewport viewport;
-    private FlagPiece selectedPiece;
     private boolean isDebugEnabled;
-    private Vector2 cursorOffset;
     private ShapeRenderer cursor;
     private Vector2 cursorPosition;
-    private Color cursorColor;
     private static Table table;
     private Label testLabel;
     private TextButton checkButton;
@@ -65,13 +61,6 @@ public class Main extends ApplicationAdapter {
 
         this.isDebugEnabled = false;
 
-        // CURSOR
-        cursorOffset = new Vector2();
-        cursorPosition = new Vector2();
-        cursorColor = Color.CORAL;
-
-        selectedPiece = null;
-
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
@@ -92,8 +81,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        cursorPosition.x = Gdx.input.getX();
-        cursorPosition.y = Gdx.input.getY();
         viewport.unproject(cursorPosition);
         Gdx.gl.glClearColor(1, 1, 1, 1);
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
@@ -112,6 +99,8 @@ public class Main extends ApplicationAdapter {
     }
 
     public void drawCursor() {
+        cursorPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+
         ShapeRenderer cursor = new ShapeRenderer();
 
         cursor.setProjectionMatrix(viewport.getCamera().combined);
@@ -173,37 +162,11 @@ public class Main extends ApplicationAdapter {
                 }
             }
         }
-
-
-
-        if (Gdx.input.isTouched() && selectedPiece != null) {
-            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-//                ROTATE SPRITE
-                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-                viewport.unproject(touchPos);
-                selectedPiece.setRotation(touchPos.y);
-            }
-            else {
-//                MOVE SPRITE
-                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-                viewport.unproject(touchPos);
-                selectedPiece.setPosition(touchPos.x - cursorOffset.x, touchPos.y - cursorOffset.y);
-            }
-        }
-
-        if (!Gdx.input.isTouched()) {
-            selectedPiece = null;
-        }
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
-    }
-
-    private void grabPiece() {
-
     }
 
     @Override
