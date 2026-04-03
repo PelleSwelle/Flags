@@ -56,10 +56,6 @@ public class FlagPiece extends Actor {
         return Utils.isAlmostEqual(new Vector2(getX(), getY()), intendedPosition, 5);
     }
 
-    public void changeOrder() {
-
-    }
-
     public boolean isRotationCloseEnough() {
         return sprite.getRotation() < 5 || sprite.getRotation() > 355;
     }
