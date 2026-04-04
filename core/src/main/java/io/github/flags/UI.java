@@ -22,6 +22,7 @@ public class UI {
         this.skin = new Skin(Gdx.files.internal("skin/glassy/skin/glassy-ui.json"));
         this.font = this.generateFont(40);
         this.skin.add("default-font", font);
+
         // TEXT BUTTON STYLE
         this.textButtonStyle = new TextButtonStyle();
         this.textButtonStyle.font = this.font;

@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainScreen implements Screen {
-    final Main parent;
+    final FlagAssembly parent;
 
     private Stage stage;
     private Flag flag;
@@ -26,8 +26,8 @@ public class MainScreen implements Screen {
     private Label countryNameLabel;
     private UI ui;
 
-    public MainScreen(final Main main) {
-        parent = main;
+    public MainScreen(final FlagAssembly flags) {
+        parent = flags;
 
         ui = new UI();
         checkButton = new TextButton("Check", ui.skin, "default");

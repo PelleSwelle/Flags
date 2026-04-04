@@ -1,13 +1,12 @@
 package io.github.flags;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Game;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
-public class Main extends Game {
+public class FlagAssembly extends Game {
     // SCREENS
     private MainScreen mainScreen;
     private MenuScreen menuScreen;
@@ -17,16 +16,16 @@ public class Main extends Game {
 
     public SpriteBatch batch;
     public FitViewport viewport;
-    private static UI ui;
+    public static UI ui;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+        ui = new UI();
         viewport = new FitViewport(1028, 800);
         menuScreen = new MenuScreen(this);
         mainScreen = new MainScreen(this);
-        setScreen(mainScreen);
-        ui = new UI();
+        setScreen(menuScreen);
     }
 
     public void changeScreen(int screen) {
