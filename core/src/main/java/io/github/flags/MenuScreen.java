@@ -46,7 +46,8 @@ public class MenuScreen implements Screen {
         String jsonPath = "flags/data.json";
 
         JsonValue root = json.fromJson(null, Gdx.files.internal(jsonPath));
-        return root.get((int)(Math.random() * 10)).toString();
+        JsonValue countryName = root.get(1);
+        return countryName.toString();
     }
 
     private void loadRandomFlag() {
