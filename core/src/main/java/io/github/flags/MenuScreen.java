@@ -42,11 +42,13 @@ public class MenuScreen implements Screen {
     }
 
     private String getRandomCountryName() {
+        int numberOfCountries = 4;
         Json json = new Json();
         String jsonPath = "flags/data.json";
 
         JsonValue root = json.fromJson(null, Gdx.files.internal(jsonPath));
-        JsonValue countryName = root.get(1);
+        int randomNumber = (int)(Math.random() * (numberOfCountries - 0)) + 0;
+        JsonValue countryName = root.get(randomNumber);
         return countryName.toString();
     }
 
