@@ -17,6 +17,7 @@ public class FlagAssembly extends Game {
     public SpriteBatch batch;
     public FitViewport viewport;
     public static UI ui;
+    public Flag currentFlag;
 
     @Override
     public void create() {
@@ -24,18 +25,21 @@ public class FlagAssembly extends Game {
         ui = new UI();
         viewport = new FitViewport(1028, 800);
         menuScreen = new MenuScreen(this);
-        mainScreen = new MainScreen(this);
+        if (currentFlag != null) {
+            mainScreen = new MainScreen(this, currentFlag);
+        }
         setScreen(menuScreen);
     }
 
     public void changeScreen(int screen) {
         switch (screen){
             case MENU:
+                currentFlag = null;
                 if (menuScreen == null) menuScreen = new MenuScreen(this);
                 this.setScreen(menuScreen);
                 break;
             case APPLICATION:
-                if (mainScreen == null) mainScreen = new MainScreen(this);
+                if (mainScreen == null) mainScreen = new MainScreen(this, currentFlag);
                 this.setScreen(mainScreen);
                 break;
         }

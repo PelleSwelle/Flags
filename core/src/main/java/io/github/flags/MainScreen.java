@@ -26,14 +26,14 @@ public class MainScreen implements Screen {
     private Label countryNameLabel;
     private UI ui;
 
-    public MainScreen(final FlagAssembly flags) {
+    public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
 
         ui = new UI();
         checkButton = new TextButton("Check", ui.skin, "default");
         checkButton.pad(20);
         checkButton.addListener(checkCorrectness());
-        flag = new Flag("afghanistan");
+        flag = _flag;
 
         countryNameLabel = new Label(flag.country, ui.skin);
         countryNameLabel.setVisible(false);

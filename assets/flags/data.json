@@ -1,5 +1,6 @@
 {
-  "afghanistan": {
+  "afghanistan":
+  {
     "pieces": [
       {
         "file": "black.png",
@@ -23,7 +24,8 @@
       }
     ]
   },
-  "iceland": {
+  "iceland":
+  {
     "pieces": [
       {
         "file": "flag.png",
@@ -52,7 +54,8 @@
       }
     ]
   },
-  "liberia": {
+  "liberia":
+  {
     "pieces": [
       {
         "file": "Frame 119.png",
@@ -70,11 +73,14 @@
         "y": 64.64
       },
       {
-        "file": "Vector-1.png"
+        "file": "Vector-1.png",
+        "x": 0,
+        "y": 0
       }
     ]
   },
-  "marshall_islands": {
+  "marshall_islands":
+  {
     "pieces": [
       {
         "file": "piece0.png",

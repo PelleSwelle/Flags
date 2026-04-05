@@ -35,7 +35,6 @@ public class MenuScreen implements Screen {
         newFlagButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("pressed the random flag button");
                 loadRandomFlag();
             }
         });
@@ -49,19 +48,19 @@ public class MenuScreen implements Screen {
         JsonValue root = json.fromJson(null, Gdx.files.internal(jsonPath));
         int randomNumber = (int)(Math.random() * (numberOfCountries - 0)) + 0;
         JsonValue countryName = root.get(randomNumber);
-        return countryName.toString();
+        System.out.println("json: name: " + countryName.name);
+        return countryName.name();
     }
 
     private void loadRandomFlag() {
         String countryName = getRandomCountryName();
-        System.out.println(countryName);
-//        Flag flag = new Flag()
+        game.currentFlag = new Flag(countryName);
+        game.changeScreen(FlagAssembly.APPLICATION);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-
     }
 
     @Override

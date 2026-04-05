@@ -1,5 +1,6 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class Flag {
     public String country;
@@ -51,34 +54,42 @@ public class Flag {
             );
         }
     }
+
     public ArrayList<FlagPiece> loadPieces() {
-        Json json = new Json();
-        String jsonPath = "flags/data.json";
-
-        // Load and parse the JSON file
-        JsonValue root = json.fromJson(null, Gdx.files.internal(jsonPath));
-        JsonValue countryData = root.get(this.country);
-
-        if (countryData == null) {
-            throw new GdxRuntimeException("Country not found: " + this.country);
-        }
-
-        JsonValue piecesData = countryData.get("pieces");
         ArrayList<FlagPiece> pieces = new ArrayList<>();
 
-        for (JsonValue pieceData : piecesData) {
-            String file = pieceData.getString("file");
-            float x = pieceData.getFloat("x");
-            float y = pieceData.getFloat("y");
+        String assetstxt = Gdx.files.internal("assets.txt").readString();
+        String[] lines = assetstxt.split("\\r?\\n");
+        String prefix = "flags/" + country + "/pieces/";
+        Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + ".+\\.png$", Pattern.CASE_INSENSITIVE);
 
-            pieces.add(
-                new FlagPiece(
-                    new Sprite(
-                        new Texture(path + this.country + "/pieces/" + file)),
-                    new Vector2(x, y),
-                pieces.size()
-            ));
+        for (String line : lines) {
+            if (pattern.matcher(line).matches()) {
+                String fileName = line.substring(line.lastIndexOf('/') + 1);
+                String texturePath = line;
+                pieces.add(
+                    new FlagPiece(
+                        new Sprite(
+                            new Texture(Gdx.files.internal(texturePath))),
+                        new Vector2(0, 0),
+                        0
+                    ));
+
+            }
         }
+//        for (JsonValue pieceData : piecesData) {
+//            String file = pieceData.getString("file");
+//            float x = pieceData.getFloat("x");
+//            float y = pieceData.getFloat("y");
+//
+//            pieces.add(
+//                new FlagPiece(
+//                    new Sprite(
+//                        new Texture(path + this.country + "/pieces/" + file)),
+//                    new Vector2(x, y),
+//                pieces.size()
+//            ));
+//        }
         return pieces;
     }
 }
