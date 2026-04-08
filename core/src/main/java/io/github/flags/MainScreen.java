@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -47,7 +46,6 @@ public class MainScreen implements Screen {
         table.add(countryNameLabel);
         table.right().top();
 
-
         Gdx.input.setInputProcessor(stage);
 
         this.isDebugEnabled = false;
@@ -65,7 +63,7 @@ public class MainScreen implements Screen {
         return new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                flag.compare();
+//                flag.compare();
                 System.out.println("flag is solved? " + flag.isSolved);
                 countryNameLabel.setVisible(flag.isSolved);
             }

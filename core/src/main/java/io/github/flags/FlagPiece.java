@@ -1,22 +1,55 @@
 package io.github.flags;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-public class FlagPiece extends Actor {
+public class FlagPiece extends Image {
+    Pixmap pixmap;
     Sprite sprite;
+    private Vector2 dragOffset;
     public Vector2 intendedPosition;
 
-    public FlagPiece(Sprite sprite, Vector2 intendedPosition, int zIndex) {
-        this.sprite = sprite;
+    public FlagPiece(Texture texture, Vector2 intendedPosition) {
+        super(texture);
+
+        this.intendedPosition = intendedPosition;
+        this.dragOffset = new Vector2();
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+        pixmap = texture.getTextureData().consumePixmap();
+
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                int textureX = (int) x;
+                int textureY = (int) (pixmap.getHeight() - y); //flip y axis
+
+                if (isPixelOpaque(textureX, textureY)) {
+                    dragOffset.set(textureX, textureY);
+                    toFront();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                setPosition(getX() + x - dragOffset.x, getY() + y - dragOffset.y);
+            }
+        });
+
         this.intendedPosition = intendedPosition;
         this.setPosition(intendedPosition.x, intendedPosition.y);
-        this.setZIndex(zIndex);
-        this.setSize(sprite.getWidth(), sprite.getHeight());
+//        this.setZIndex(zIndex);
+//        this.setSize(sprite.getWidth(), sprite.getHeight());
 
         addListener(new InputListener() {
             private float dragStartX, dragStartY;
@@ -38,12 +71,20 @@ public class FlagPiece extends Actor {
         });
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        sprite.setPosition(getX(), getY());
-        sprite.setRotation(getRotation());
-        sprite.draw(batch);
+    private boolean isPixelOpaque(int x, int y) {
+        if (x < 0 || y < 0 || x >= pixmap.getWidth() || y >= pixmap.getHeight()) {
+            return false;
+        }
+        int pixel = pixmap.getPixel(x, y);
+        return ((pixel >>> 24) & 0xff) > 0;
     }
+
+//    @Override
+//    public void draw(Batch batch, float parentAlpha) {
+//        sprite.setPosition(getX(), getY());
+//        sprite.setRotation(getRotation());
+//        sprite.draw(batch);
+//    }
 
     public boolean isPositionCloseEnough() {
         return Utils.isAlmostEqual(new Vector2(getX(), getY()), intendedPosition, 5);

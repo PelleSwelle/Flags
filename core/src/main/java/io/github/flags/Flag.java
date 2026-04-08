@@ -68,12 +68,7 @@ public class Flag {
                 String fileName = line.substring(line.lastIndexOf('/') + 1);
                 String texturePath = line;
                 pieces.add(
-                    new FlagPiece(
-                        new Sprite(
-                            new Texture(Gdx.files.internal(texturePath))),
-                        new Vector2(0, 0),
-                        0
-                    )
+                    new FlagPiece(new Texture(Gdx.files.internal(texturePath)), new Vector2())
                 );
             }
         }
