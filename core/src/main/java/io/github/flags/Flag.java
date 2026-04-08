@@ -73,23 +73,10 @@ public class Flag {
                             new Texture(Gdx.files.internal(texturePath))),
                         new Vector2(0, 0),
                         0
-                    ));
-
+                    )
+                );
             }
         }
-//        for (JsonValue pieceData : piecesData) {
-//            String file = pieceData.getString("file");
-//            float x = pieceData.getFloat("x");
-//            float y = pieceData.getFloat("y");
-//
-//            pieces.add(
-//                new FlagPiece(
-//                    new Sprite(
-//                        new Texture(path + this.country + "/pieces/" + file)),
-//                    new Vector2(x, y),
-//                pieces.size()
-//            ));
-//        }
         return pieces;
     }
 }

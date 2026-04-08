@@ -20,7 +20,6 @@ public class MainScreen implements Screen {
     private Flag flag;
     private boolean isDebugEnabled;
     private ShapeRenderer cursor;
-    private Vector2 cursorPosition;
     private Table table;
     private TextButton checkButton;
     private Label countryNameLabel;
@@ -89,37 +88,6 @@ public class MainScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             isDebugEnabled = !isDebugEnabled;
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            for (FlagPiece piece : flag.pieces) {
-                if (isAbovePiece(piece)) {
-                    if (piece.getZIndex() >= 0) {
-                        System.out.println("moving from " + piece.getZIndex() + " to " + (piece.getZIndex()-1));
-                        piece.setZIndex(piece.getZIndex() + 1 );
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isAbovePiece(FlagPiece piece) {
-        return cursorPosition.x > piece.sprite.getX() &&
-            cursorPosition.x < piece.sprite.getX() + piece.sprite.getWidth() &&
-            cursorPosition.y > piece.sprite.getY() &&
-            cursorPosition.y < piece.sprite.getY() + piece.sprite.getHeight();
-    }
-
-    private boolean isAboveAnyPiece() {
-        boolean isAbove = false;
-        for (FlagPiece piece : flag.pieces) {
-            if (isAbovePiece(piece)) {
-                isAbove = true;
-                break;
-            } else {
-                isAbove = false;
-            }
-        }
-        return isAbove;
     }
 
     @Override
