@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.ConvexHull;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,12 +19,14 @@ public class FlagPiece extends Image {
     Sprite sprite;
     private final Vector2 dragOffset;
     public Vector2 intendedPosition;
+    Body body;
 
     public FlagPiece(Texture texture, Vector2 intendedPosition) {
         super(texture);
 
         this.intendedPosition = intendedPosition;
         this.dragOffset = new Vector2();
+
         if (!texture.getTextureData().isPrepared()) {
             texture.getTextureData().prepare();
         }

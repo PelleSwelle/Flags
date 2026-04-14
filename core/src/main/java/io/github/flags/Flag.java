@@ -1,5 +1,6 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Flag {
+    static final float SCALE = .5f;
     public String country;
     public Sprite reference;
     public ArrayList<FlagPiece> pieces;

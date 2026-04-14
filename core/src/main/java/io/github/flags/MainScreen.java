@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,6 +36,7 @@ public class MainScreen implements Screen {
 
     float accumulator = 0;
     PhysicsShapeCache physicsBodies;
+    Box2DDebugRenderer debugRenderer;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
@@ -69,7 +72,10 @@ public class MainScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
 
         physicsBodies = new PhysicsShapeCache("flags/marshall_islands/physicsEditorPieces.xml");
+        debugRenderer = new Box2DDebugRenderer();
 
+        Body body = physicsBodies.createBody("marshall_islands_x0_y0", world, 1, 1);
+        body.setTransform(10, 10, 0);
     }
     @Override
     public void show() {
@@ -85,6 +91,7 @@ public class MainScreen implements Screen {
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
     }
+
     private ChangeListener checkCorrectness() {
         return new ChangeListener() {
             @Override
@@ -130,6 +137,7 @@ public class MainScreen implements Screen {
         stage.act(delta);
         stage.draw();
         stepWorld();
+        debugRenderer.render(world, parent.viewport.getCamera().combined);
     }
 
     @Override
@@ -155,5 +163,6 @@ public class MainScreen implements Screen {
     @Override
     public void dispose() {
         world.dispose();
+        debugRenderer.dispose();
     }
 }
