@@ -4,7 +4,10 @@ buildscript {
     gradlePluginPortal()
     mavenLocal()
     google()
-    maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
+    maven {
+      url = 'https://central.sonatype.com/repository/maven-snapshots/'
+      url = "https://repo1.maven.org/maven2/com/codeandweb/"
+    }
   }
   dependencies {
 
@@ -30,6 +33,7 @@ project(":tools") {
 
   dependencies {
     implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    implementation "com.codeandweb.physicseditor:gdx-pe-loader:1.1.0"
   }
 }
 

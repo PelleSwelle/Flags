@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.codeandweb.physicseditor.PhysicsShapeCache;
 
 public class MainScreen implements Screen {
     final FlagAssembly parent;
@@ -23,6 +27,13 @@ public class MainScreen implements Screen {
     private TextButton checkButton;
     private Label countryNameLabel;
     private UI ui;
+    World world;
+    static final float STEP_TIME = 1f / 60f;
+    static final int VELOCITY_ITERATIONS = 6;
+    static final int POSITION_ITERATIONS = 2;
+
+    float accumulator = 0;
+    PhysicsShapeCache physicsBodies;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
@@ -53,12 +64,27 @@ public class MainScreen implements Screen {
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
+
+        Box2D.init();
+        world = new World(new Vector2(0, -10), true);
+
+        physicsBodies = new PhysicsShapeCache("flags/marshall_islands/physicsEditorPieces.xml");
+
     }
     @Override
     public void show() {
 
     }
 
+    private void stepWorld() {
+        float delta = Gdx.graphics.getDeltaTime();
+        accumulator += Math.min(delta, 0.25f);
+
+        if (accumulator >= STEP_TIME) {
+            accumulator -= STEP_TIME;
+            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        }
+    }
     private ChangeListener checkCorrectness() {
         return new ChangeListener() {
             @Override
@@ -103,7 +129,7 @@ public class MainScreen implements Screen {
 
         stage.act(delta);
         stage.draw();
-
+        stepWorld();
     }
 
     @Override
@@ -128,6 +154,6 @@ public class MainScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        world.dispose();
     }
 }
