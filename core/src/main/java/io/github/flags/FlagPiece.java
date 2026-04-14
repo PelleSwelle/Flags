@@ -1,10 +1,12 @@
 package io.github.flags;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.ConvexHull;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,16 +15,17 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
-public class FlagPiece extends Image {
+public class FlagPiece extends Actor {
     Pixmap pixmap;
     Sprite sprite;
     private final Vector2 dragOffset;
     public Vector2 intendedPosition;
-    Body body;
+    Polygon polygon;
 
     public FlagPiece(Texture texture, Vector2 intendedPosition) {
-        super(texture);
 
         this.intendedPosition = intendedPosition;
         this.dragOffset = new Vector2();
@@ -36,90 +39,45 @@ public class FlagPiece extends Image {
         this.setPosition(intendedPosition.x, intendedPosition.y);
 //        this.setZIndex(zIndex);
         this.setSize(texture.getWidth(), texture.getHeight());
+        this.loadPolygon();
 
         // Add input listener for dragging
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Convert touch coordinates to the sprite's local coordinates
-                // (accounts for position, origin, scale, and rotation)
-                Vector2 localTouch = new Vector2(x, y);
-                localToActorCoordinates(event.getListenerActor(), localTouch); // Converts to actor-local coordinates
-
-                // Convert local coordinates to texture coordinates
-                // (accounts for the sprite's origin and flip Y-axis for Pixmap)
-                int texX = (int) (localTouch.x - getOriginX());
-                int texY = (int) (pixmap.getHeight() - (localTouch.y - getOriginY()));
-
-                // Clamp to texture bounds
-                if (texX >= 0 && texY >= 0 && texX < pixmap.getWidth() && texY < pixmap.getHeight()) {
-                    if (isPixelOpaque(texX, texY)) {
-                        dragOffset.set(x, y);
-                        toFront();
-                        return true;
-                    }
-                }
-                return false;
+                return polygon.contains(x, y);
             }
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                setPosition(getX() + x - dragOffset.x, getY() + y - dragOffset.y);
+                moveBy(x - getWidth() / 2, y - getHeight() / 2);
             }
         });
     }
 
-    private boolean isPixelOpaque(int x, int y) {
-        if (x < 0 || y < 0 || x >= pixmap.getWidth() || y >= pixmap.getHeight()) {
-            return false;
-        }
-        int pixel = pixmap.getPixel(x, y);
-        return ((pixel >>> 24) & 0xff) > 10; // Alpha > 0 means opaque
+    private void syncPolygonToActor() {
+        polygon.setPosition(getX(), getY());
+        polygon.setRotation(getRotation());
+        polygon.setScale(getScaleX(), getScaleY());
     }
 
-//    private FloatArray computeConvexHull(Array<Vector2> boundaryPoints) {
-//        return new ConvexHull().computePolygon(boundaryPoints, false);
-//    }
+    private void loadPolygon() {
+        JsonValue root = new JsonReader().parse(Gdx.files.internal("flags/marshall_islands/pieces.json"));
+        JsonValue piece = root.get(0); //TODO: just trying the first.
+        JsonValue shape = piece.get("shape");
 
-    private Array<Vector2> getBoundaryPoints(Pixmap pixmap) {
-        Array<Vector2> boundaryPoints = new Array<>();
+        float[] vertices = shape.asFloatArray();
 
-        for (int y = 0; y < pixmap.getHeight(); y++) {
-            for (int x = 0; x < pixmap.getWidth(); x++) {
-                if (isBoundary(pixmap, x, y)) {
-                    boundaryPoints.add(new Vector2(x, y));
-                }
-            }
-        }
-        return boundaryPoints;
+        this.polygon = new Polygon(vertices);
     }
 
-    private boolean isBoundary(Pixmap pixmap, int x, int y) {
-        int alpha = (pixmap.getPixel(x, y) >>> 24) & 0xff;
-        if (alpha <= 10) return false;
-
-        for (int dy = -1; dy <= 1; dy++) {
-            for (int dx = -1; dx <= 1; dx++) {
-                int nx =x + dx;
-                int ny = y+ dy;
-
-                if (nx < 0 || ny < 0 || nx >= pixmap.getWidth() || ny >= pixmap.getHeight())
-                    return true;
-
-                int neighborAlpha = (pixmap.getPixel(nx, ny) >>> 24) & 0xff;
-                if (neighborAlpha <= 10)
-                    return true;
-            }
-        }
-        return false;
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        sprite.setPosition(getX(), getY());
+        sprite.setRotation(getRotation());
+        sprite.draw(batch);
+        syncPolygonToActor();
     }
-
-//    @Override
-//    public void draw(Batch batch, float parentAlpha) {
-//        sprite.setPosition(getX(), getY());
-//        sprite.setRotation(getRotation());
-//        sprite.draw(batch);
-//    }
 
     public boolean isPositionCloseEnough() {
         return Utils.isAlmostEqual(new Vector2(getX(), getY()), intendedPosition, 5);
@@ -128,4 +86,5 @@ public class FlagPiece extends Image {
     public boolean isRotationCloseEnough() {
         return getRotation() < 5 || getRotation() > 355;
     }
+
 }

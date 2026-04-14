@@ -4,9 +4,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
@@ -59,6 +61,8 @@ public class Flag {
 
     public ArrayList<FlagPiece> loadPieces() {
         ArrayList<FlagPiece> pieces = new ArrayList<>();
+
+
 
         String assetstxt = Gdx.files.internal("assets.txt").readString();
         String[] lines = assetstxt.split("\\r?\\n");

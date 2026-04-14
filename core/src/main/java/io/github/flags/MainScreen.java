@@ -70,7 +70,6 @@ public class MainScreen implements Screen {
 
         Box2D.init();
         world = new World(new Vector2(0, -10), true);
-
         physicsBodies = new PhysicsShapeCache("flags/marshall_islands/physicsEditorPieces.xml");
         debugRenderer = new Box2DDebugRenderer();
 
@@ -128,15 +127,17 @@ public class MainScreen implements Screen {
 
         parent.batch.begin();
 
+        stepWorld();
         if (flag.reference_displayed) {
             flag.reference.draw(parent.batch);
         }
         parent.batch.end();
         enableInput();
 
+
+
         stage.act(delta);
         stage.draw();
-        stepWorld();
         debugRenderer.render(world, parent.viewport.getCamera().combined);
     }
 
