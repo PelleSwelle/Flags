@@ -57,6 +57,11 @@ public class MenuScreen implements Screen {
         game.changeScreen(FlagAssembly.APPLICATION);
     }
 
+    private void loadFlag(String countryName) {
+        game.currentFlag = new Flag(countryName);
+        game.changeScreen(FlagAssembly.APPLICATION);
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);

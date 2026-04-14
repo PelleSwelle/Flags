@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.ConvexHull;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -19,7 +18,6 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 public class FlagPiece extends Actor {
-    Pixmap pixmap;
     Sprite sprite;
     private final Vector2 dragOffset;
     public Vector2 intendedPosition;
@@ -29,11 +27,7 @@ public class FlagPiece extends Actor {
 
         this.intendedPosition = intendedPosition;
         this.dragOffset = new Vector2();
-
-        if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-        pixmap = texture.getTextureData().consumePixmap();
+        this.sprite = new Sprite(texture);
 
         this.intendedPosition = intendedPosition;
         this.setPosition(intendedPosition.x, intendedPosition.y);
@@ -45,7 +39,11 @@ public class FlagPiece extends Actor {
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return polygon.contains(x, y);
+                if (polygon.contains(x, y)) {
+                    System.out.println("is contained");
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -64,7 +62,9 @@ public class FlagPiece extends Actor {
     private void loadPolygon() {
         JsonValue root = new JsonReader().parse(Gdx.files.internal("flags/marshall_islands/pieces.json"));
         JsonValue piece = root.get(0); //TODO: just trying the first.
-        JsonValue shape = piece.get("shape");
+        JsonValue shape = piece.get(0).get("shape");
+        System.out.println("***** shape: *****");
+        System.out.println(shape);
 
         float[] vertices = shape.asFloatArray();
 
@@ -75,8 +75,8 @@ public class FlagPiece extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         sprite.setPosition(getX(), getY());
         sprite.setRotation(getRotation());
-        sprite.draw(batch);
         syncPolygonToActor();
+        sprite.draw(batch);
     }
 
     public boolean isPositionCloseEnough() {
