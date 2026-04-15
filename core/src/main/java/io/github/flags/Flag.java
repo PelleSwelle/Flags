@@ -6,17 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Flag {
-    static final float SCALE = .5f;
     public String country;
     public Sprite reference;
     public ArrayList<FlagPiece> pieces;
@@ -61,23 +57,12 @@ public class Flag {
 
     public ArrayList<FlagPiece> loadPieces() {
         ArrayList<FlagPiece> pieces = new ArrayList<>();
+        JsonValue root = new JsonReader().parse(Gdx.files.internal(path + country + "/data.json"));
 
-
-
-        String assetstxt = Gdx.files.internal("assets.txt").readString();
-        String[] lines = assetstxt.split("\\r?\\n");
-        String prefix = "flags/" + country + "/pieces/";
-        Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + ".+\\.png$", Pattern.CASE_INSENSITIVE);
-
-        for (String line : lines) {
-            if (pattern.matcher(line).matches()) {
-                String fileName = line.substring(line.lastIndexOf('/') + 1);
-                String texturePath = line;
-                pieces.add(
-                    new FlagPiece(new Texture(Gdx.files.internal(texturePath)), new Vector2())
-                );
-            }
+        for (JsonValue pieceData = root.child; pieceData != null; pieceData = pieceData.next) {
+            pieces.add(new FlagPiece(country, pieceData));
         }
+
         return pieces;
     }
 }

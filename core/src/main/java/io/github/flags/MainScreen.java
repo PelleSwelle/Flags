@@ -3,6 +3,7 @@ package io.github.flags;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -28,12 +29,13 @@ public class MainScreen implements Screen {
     private TextButton checkButton;
     private Label countryNameLabel;
     private UI ui;
+    private ShapeRenderer debugRenderer;
 
     float accumulator = 0;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
-
+        debugRenderer = new ShapeRenderer();
         ui = new UI();
         checkButton = new TextButton("Check", ui.skin, "default");
         checkButton.pad(20);
@@ -60,6 +62,8 @@ public class MainScreen implements Screen {
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
+
+        System.out.println("Loaded " + flag.pieces.size() + " pieces.");
     }
     @Override
     public void show() {
@@ -99,6 +103,14 @@ public class MainScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
         parent.batch.setProjectionMatrix(parent.viewport.getCamera().combined);
+        debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.RED);
+        for (FlagPiece p: flag.pieces) {
+            p.drawPolygons(debugRenderer);
+        }
+
+        debugRenderer.end();
 
         parent.batch.begin();
 
@@ -107,8 +119,6 @@ public class MainScreen implements Screen {
         }
         parent.batch.end();
         enableInput();
-
-
 
         stage.act(delta);
         stage.draw();
