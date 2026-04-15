@@ -1,11 +1,15 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.*;
 
 import java.util.ArrayList;
@@ -19,17 +23,30 @@ public class Flag {
     private final String path = "flags/";
     public boolean reference_displayed = false;
     public boolean isSolved = false;
+    public boolean isPolygonsVisible = false;
+    private boolean isSpritesVisible = true;
 
-//    TODO: selection of country
+    //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
-        this.pieces = loadPieces();
-        this.reference = new Sprite(new Texture(path+country+"/flag.png"));
-        this.reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
+        pieces = loadPieces();
+        reference = new Sprite(new Texture(path+country+"/flag.png"));
+        reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
+    }
+
+    public void togglePolygons() {
+        isPolygonsVisible = !isPolygonsVisible;
+    }
+
+    public void toggleSprites() {
+        isSpritesVisible = !isSpritesVisible;
+        for (FlagPiece p: pieces) {
+            p.isSpriteVisible = isSpritesVisible;
+        }
     }
 
     public void toggleReference() {
-        this.reference_displayed = !this.reference_displayed;
+        reference_displayed = !reference_displayed;
     }
 
     public void compare() {
@@ -52,6 +69,12 @@ public class Flag {
                 Math.abs(pieces.get(i).intendedPosition.y - pieces.get(i).getY())
                 ) + "\n"
             );
+        }
+    }
+
+    public void drawPolygons(ShapeRenderer renderer) {
+        for (FlagPiece p: pieces) {
+            p.drawPolygons(renderer);
         }
     }
 

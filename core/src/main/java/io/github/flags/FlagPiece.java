@@ -17,11 +17,12 @@ public class FlagPiece extends Actor {
     private final Vector2 dragOffset;
     public Vector2 intendedPosition;
     private final Array<Polygon> polygons;
+    public boolean isSpriteVisible = true;
 
     public FlagPiece(String countryName, JsonValue data) {
         String pieceName = data.name;
         String textureFile = "flags/" + countryName + "/pieces/" + pieceName + ".png";
-        this.intendedPosition = new Vector2(0, 0);
+        this.intendedPosition = getIndendedCoordinates();
         this.dragOffset = new Vector2();
         this.sprite = new Sprite(new Texture(textureFile));
 
@@ -30,6 +31,10 @@ public class FlagPiece extends Actor {
         this.polygons = getPolygons(data);
 
         addListener(touchAndDragListener);
+    }
+
+    private Vector2 getIndendedCoordinates() {
+        return new Vector2(0, 0); // TODO: parse correct position from filename
     }
 
     InputListener touchAndDragListener = new InputListener() {
@@ -87,7 +92,9 @@ public class FlagPiece extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         sprite.setPosition(getX(), getY());
         sprite.setRotation(getRotation());
-        sprite.draw(batch);
+
+        if (isSpriteVisible)
+            sprite.draw(batch);
     }
 
     public boolean isPositionCloseEnough() {

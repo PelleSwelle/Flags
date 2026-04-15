@@ -29,7 +29,7 @@ public class MainScreen implements Screen {
     private TextButton checkButton;
     private Label countryNameLabel;
     private UI ui;
-    private ShapeRenderer debugRenderer;
+    public ShapeRenderer debugRenderer;
 
     float accumulator = 0;
 
@@ -86,6 +86,13 @@ public class MainScreen implements Screen {
             flag.toggleReference();
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            flag.togglePolygons();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            flag.toggleSprites();
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             flag.compare();
@@ -106,11 +113,13 @@ public class MainScreen implements Screen {
         debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
         debugRenderer.setColor(Color.RED);
-        for (FlagPiece p: flag.pieces) {
-            p.drawPolygons(debugRenderer);
-        }
 
+        if (flag.isPolygonsVisible) {
+            flag.drawPolygons(debugRenderer);
+        }
         debugRenderer.end();
+
+
 
         parent.batch.begin();
 
@@ -118,6 +127,9 @@ public class MainScreen implements Screen {
             flag.reference.draw(parent.batch);
         }
         parent.batch.end();
+        debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        debugRenderer.circle(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY(), 20);
+        debugRenderer.end();
         enableInput();
 
         stage.act(delta);
