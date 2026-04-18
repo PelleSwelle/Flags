@@ -30,7 +30,8 @@ public class MainScreen implements Screen {
     private Label countryNameLabel;
     private UI ui;
     public ShapeRenderer debugRenderer;
-
+    private Vector2 screenCoordinates;
+    private Vector2 stageCoordinates;
     float accumulator = 0;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
@@ -47,7 +48,6 @@ public class MainScreen implements Screen {
         stage = new Stage(parent.viewport);
         table = new Table();
         stage.addActor(table);
-
         table.setFillParent(true);
         table.setDebug(true);
         table.add(checkButton);
@@ -62,8 +62,6 @@ public class MainScreen implements Screen {
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
-
-        System.out.println("Loaded " + flag.pieces.size() + " pieces.");
     }
     @Override
     public void show() {
@@ -113,13 +111,13 @@ public class MainScreen implements Screen {
         debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
         debugRenderer.setColor(Color.RED);
+        screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
         if (flag.isPolygonsVisible) {
             flag.drawPolygons(debugRenderer);
         }
         debugRenderer.end();
-
-
 
         parent.batch.begin();
 
@@ -127,13 +125,23 @@ public class MainScreen implements Screen {
             flag.reference.draw(parent.batch);
         }
         parent.batch.end();
-        debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        debugRenderer.circle(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY(), 20);
-        debugRenderer.end();
+
         enableInput();
 
         stage.act(delta);
         stage.draw();
+        boolean isHovering = false;
+        for (FlagPiece piece: flag.pieces) {
+            if (piece.hit(stageCoordinates.x, stageCoordinates.y, true) != null) {
+                isHovering = true;
+                break;
+            }
+        }
+
+        debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        debugRenderer.setColor(isHovering ? Color.GREEN : Color.RED);
+        debugRenderer.circle(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY(), 20);
+        debugRenderer.end();
     }
 
     @Override

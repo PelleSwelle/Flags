@@ -52,9 +52,6 @@ public class FlagPiece extends Actor {
             float newY = getY() + y - dragOffset.y;
 
             setPosition(newX, newY);
-            for (Polygon p : new Array.ArrayIterator<>(polygons)) {
-                p.setPosition(newX, newY);
-            }
         }
     };
 
