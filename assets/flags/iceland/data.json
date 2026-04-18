@@ -1,0 +1,47 @@
+{ 
+    
+    "iceland_x0_y0": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   0, 0  ,  900, 0  ,  900, 649  ,  0, 649  ]
+        }
+    ]
+    , 
+    "iceland_x0_y252": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   0, 0  ,  900, 0  ,  900, 145  ,  0, 145  ]
+        }
+    ]
+    , 
+    "iceland_x0_y288": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   0, 0  ,  900, 0  ,  900, 73  ,  0, 73  ]
+        }
+    ]
+    , 
+    "iceland_x252_y0": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   0, 649  ,  0, 0  ,  144, 0  ,  144, 649  ]
+        }
+    ]
+    , 
+    "iceland_x288_y0": [
+        
+        {
+            "density": 2, "friction": 0, "bounce": 0, 
+            "filter": { "categoryBits": 1, "maskBits": 65535 },
+            "shape": [   0, 649  ,  0, 0  ,  72, 0  ,  72, 649  ]
+        }
+    ]
+}

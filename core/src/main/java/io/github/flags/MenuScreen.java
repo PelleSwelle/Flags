@@ -33,7 +33,7 @@ public class MenuScreen implements Screen {
         randomFlagButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                loadFlag("marshall_islands");
+                loadRandomFlag();
             }
         });
     }
