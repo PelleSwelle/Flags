@@ -8,15 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import static io.github.flags.FlagAssembly.ui;
 
 public class MenuScreen implements Screen {
     private FlagAssembly game;
-    private TextButton newFlagButton;
+    private TextButton randomFlagButton;
     private Table table;
     private Stage stage;
 //    private UI ui;
@@ -24,18 +22,18 @@ public class MenuScreen implements Screen {
     public MenuScreen(FlagAssembly flagAssembly) {
         game = flagAssembly;
         stage = new Stage(game.viewport);
-        newFlagButton = new TextButton("Assemble random flag", ui.skin, "default");
-        newFlagButton.pad(20);
+        randomFlagButton = new TextButton("Assemble random flag", ui.skin, "default");
+        randomFlagButton.pad(20);
         table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
-        table.add(newFlagButton);
+        table.add(randomFlagButton);
         stage.addActor(table);
 
-        newFlagButton.addListener(new ChangeListener() {
+        randomFlagButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                loadRandomFlag();
+                loadFlag("marshall_islands");
             }
         });
     }
@@ -53,6 +51,11 @@ public class MenuScreen implements Screen {
 
     private void loadRandomFlag() {
         String countryName = getRandomCountryName();
+        game.currentFlag = new Flag(countryName);
+        game.changeScreen(FlagAssembly.APPLICATION);
+    }
+
+    private void loadFlag(String countryName) {
         game.currentFlag = new Flag(countryName);
         game.changeScreen(FlagAssembly.APPLICATION);
     }

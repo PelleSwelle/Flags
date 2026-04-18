@@ -1,5 +1,6 @@
 package io.github.flags;
 
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Game;
@@ -15,6 +16,8 @@ public class FlagAssembly extends Game {
     public final static int APPLICATION = 1;
 
     public SpriteBatch batch;
+    public PolygonSpriteBatch polySpriteBatch;
+
     public FitViewport viewport;
     public static UI ui;
     public Flag currentFlag;
@@ -22,6 +25,7 @@ public class FlagAssembly extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        polySpriteBatch = new PolygonSpriteBatch();
         ui = new UI();
         viewport = new FitViewport(1028, 800);
         menuScreen = new MenuScreen(this);

@@ -1,12 +1,16 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,17 +23,30 @@ public class Flag {
     private final String path = "flags/";
     public boolean reference_displayed = false;
     public boolean isSolved = false;
+    public boolean isPolygonsVisible = false;
+    private boolean isSpritesVisible = true;
 
-//    TODO: selection of country
+    //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
-        this.pieces = loadPieces();
-        this.reference = new Sprite(new Texture(path+country+"/flag.png"));
-        this.reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
+        pieces = loadPieces();
+        reference = new Sprite(new Texture(path+country+"/flag.png"));
+        reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
+    }
+
+    public void togglePolygons() {
+        isPolygonsVisible = !isPolygonsVisible;
+    }
+
+    public void toggleSprites() {
+        isSpritesVisible = !isSpritesVisible;
+        for (FlagPiece p: pieces) {
+            p.isSpriteVisible = isSpritesVisible;
+        }
     }
 
     public void toggleReference() {
-        this.reference_displayed = !this.reference_displayed;
+        reference_displayed = !reference_displayed;
     }
 
     public void compare() {
@@ -55,41 +72,20 @@ public class Flag {
         }
     }
 
+    public void drawPolygons(ShapeRenderer renderer) {
+        for (FlagPiece p: pieces) {
+            p.drawPolygons(renderer);
+        }
+    }
+
     public ArrayList<FlagPiece> loadPieces() {
         ArrayList<FlagPiece> pieces = new ArrayList<>();
+        JsonValue root = new JsonReader().parse(Gdx.files.internal(path + country + "/data.json"));
 
-        String assetstxt = Gdx.files.internal("assets.txt").readString();
-        String[] lines = assetstxt.split("\\r?\\n");
-        String prefix = "flags/" + country + "/pieces/";
-        Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + ".+\\.png$", Pattern.CASE_INSENSITIVE);
-
-        for (String line : lines) {
-            if (pattern.matcher(line).matches()) {
-                String fileName = line.substring(line.lastIndexOf('/') + 1);
-                String texturePath = line;
-                pieces.add(
-                    new FlagPiece(
-                        new Sprite(
-                            new Texture(Gdx.files.internal(texturePath))),
-                        new Vector2(0, 0),
-                        0
-                    ));
-
-            }
+        for (JsonValue pieceData = root.child; pieceData != null; pieceData = pieceData.next) {
+            pieces.add(new FlagPiece(country, pieceData));
         }
-//        for (JsonValue pieceData : piecesData) {
-//            String file = pieceData.getString("file");
-//            float x = pieceData.getFloat("x");
-//            float y = pieceData.getFloat("y");
-//
-//            pieces.add(
-//                new FlagPiece(
-//                    new Sprite(
-//                        new Texture(path + this.country + "/pieces/" + file)),
-//                    new Vector2(x, y),
-//                pieces.size()
-//            ));
-//        }
+
         return pieces;
     }
 }

@@ -1,48 +1,97 @@
 package io.github.flags;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class FlagPiece extends Actor {
-    Sprite sprite;
+    private final Sprite sprite;
+    private final Vector2 dragOffset;
     public Vector2 intendedPosition;
+    private final Array<Polygon> polygons;
+    public boolean isSpriteVisible = true;
 
-    public FlagPiece(Sprite sprite, Vector2 intendedPosition, int zIndex) {
-        this.sprite = sprite;
-        this.intendedPosition = intendedPosition;
+    public FlagPiece(String countryName, JsonValue data) {
+        String pieceName = data.name;
+        String textureFile = "flags/" + countryName + "/pieces/" + pieceName + ".png";
+        this.intendedPosition = getIndendedCoordinates();
+        this.dragOffset = new Vector2();
+        this.sprite = new Sprite(new Texture(textureFile));
+
         this.setPosition(intendedPosition.x, intendedPosition.y);
-        this.setZIndex(zIndex);
         this.setSize(sprite.getWidth(), sprite.getHeight());
+        this.polygons = getPolygons(data);
 
-        addListener(new InputListener() {
-            private float dragStartX, dragStartY;
-            private float actorStartX, actorStartY;
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                dragStartX = event.getStageX();
-                dragStartY = event.getStageY();
-                actorStartX = getX();
-                actorStartY = getY();
-                return true;
+        addListener(touchAndDragListener);
+    }
+
+    private Vector2 getIndendedCoordinates() {
+        return new Vector2(0, 0); // TODO: parse correct position from filename
+    }
+
+    InputListener touchAndDragListener = new InputListener() {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            dragOffset.x = x;
+            dragOffset.y = y;
+            toFront();
+            return true;
+        }
+
+        @Override
+        public void touchDragged(InputEvent event, float x, float y, int pointer) {
+            float newX = getX() + x - dragOffset.x;
+            float newY = getY() + y - dragOffset.y;
+
+            setPosition(newX, newY);
+        }
+    };
+
+    @Override
+    public Actor hit(float x, float y, boolean touchable) {
+        for (Polygon p : new Array.ArrayIterator<>(polygons)) {
+            if (p.contains(x, y)) {
+                return this;
             }
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                float currentX = event.getStageX();
-                float currentY = event.getStageY();
-                setPosition(actorStartX + (currentX - dragStartX), actorStartY + (currentY - dragStartY));
+        }
+        return null;
+    }
+
+    private Array<Polygon> getPolygons(JsonValue pieceData) {
+        Array<Polygon> polygons = new Array<>();
+
+        for (JsonValue fixture = pieceData.child; fixture != null; fixture = fixture.next) {
+            float[] vertices = fixture.get("shape").asFloatArray();
+
+            for (int i = 1; i < vertices.length; i += 2) {
+                vertices[i] = sprite.getHeight() - vertices[i];
             }
-        });
+            polygons.add(new Polygon(vertices));
+        }
+        return polygons;
+    }
+
+    public void drawPolygons(ShapeRenderer renderer) {
+        for (Polygon p : new Array.ArrayIterator<>(polygons)) {
+            renderer.polygon(p.getTransformedVertices());
+        }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         sprite.setPosition(getX(), getY());
         sprite.setRotation(getRotation());
-        sprite.draw(batch);
+
+        if (isSpriteVisible)
+            sprite.draw(batch);
     }
 
     public boolean isPositionCloseEnough() {
@@ -50,6 +99,7 @@ public class FlagPiece extends Actor {
     }
 
     public boolean isRotationCloseEnough() {
-        return sprite.getRotation() < 5 || sprite.getRotation() > 355;
+        return getRotation() < 5 || getRotation() > 355;
     }
+
 }

@@ -3,8 +3,13 @@ package io.github.flags;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,15 +25,18 @@ public class MainScreen implements Screen {
     private Flag flag;
     private boolean isDebugEnabled;
     private ShapeRenderer cursor;
-    private Vector2 cursorPosition;
     private Table table;
     private TextButton checkButton;
     private Label countryNameLabel;
     private UI ui;
+    public ShapeRenderer debugRenderer;
+    private Vector2 screenCoordinates;
+    private Vector2 stageCoordinates;
+    float accumulator = 0;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
-
+        debugRenderer = new ShapeRenderer();
         ui = new UI();
         checkButton = new TextButton("Check", ui.skin, "default");
         checkButton.pad(20);
@@ -40,14 +48,12 @@ public class MainScreen implements Screen {
         stage = new Stage(parent.viewport);
         table = new Table();
         stage.addActor(table);
-
         table.setFillParent(true);
         table.setDebug(true);
         table.add(checkButton);
         table.row();
         table.add(countryNameLabel);
         table.right().top();
-
 
         Gdx.input.setInputProcessor(stage);
 
@@ -66,7 +72,7 @@ public class MainScreen implements Screen {
         return new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                flag.compare();
+//                flag.compare();
                 System.out.println("flag is solved? " + flag.isSolved);
                 countryNameLabel.setVisible(flag.isSolved);
             }
@@ -78,6 +84,13 @@ public class MainScreen implements Screen {
             flag.toggleReference();
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            flag.togglePolygons();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            flag.toggleSprites();
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             flag.compare();
@@ -89,43 +102,22 @@ public class MainScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             isDebugEnabled = !isDebugEnabled;
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            for (FlagPiece piece : flag.pieces) {
-                if (isAbovePiece(piece)) {
-                    if (piece.getZIndex() >= 0) {
-                        System.out.println("moving from " + piece.getZIndex() + " to " + (piece.getZIndex()-1));
-                        piece.setZIndex(piece.getZIndex() + 1 );
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isAbovePiece(FlagPiece piece) {
-        return cursorPosition.x > piece.sprite.getX() &&
-            cursorPosition.x < piece.sprite.getX() + piece.sprite.getWidth() &&
-            cursorPosition.y > piece.sprite.getY() &&
-            cursorPosition.y < piece.sprite.getY() + piece.sprite.getHeight();
-    }
-
-    private boolean isAboveAnyPiece() {
-        boolean isAbove = false;
-        for (FlagPiece piece : flag.pieces) {
-            if (isAbovePiece(piece)) {
-                isAbove = true;
-                break;
-            } else {
-                isAbove = false;
-            }
-        }
-        return isAbove;
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
         parent.batch.setProjectionMatrix(parent.viewport.getCamera().combined);
+        debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.RED);
+        screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
+
+        if (flag.isPolygonsVisible) {
+            flag.drawPolygons(debugRenderer);
+        }
+        debugRenderer.end();
 
         parent.batch.begin();
 
@@ -133,11 +125,23 @@ public class MainScreen implements Screen {
             flag.reference.draw(parent.batch);
         }
         parent.batch.end();
+
         enableInput();
 
         stage.act(delta);
         stage.draw();
+        boolean isHovering = false;
+        for (FlagPiece piece: flag.pieces) {
+            if (piece.hit(stageCoordinates.x, stageCoordinates.y, true) != null) {
+                isHovering = true;
+                break;
+            }
+        }
 
+        debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        debugRenderer.setColor(isHovering ? Color.GREEN : Color.RED);
+        debugRenderer.circle(Gdx.input.getX(), stage.getHeight() - Gdx.input.getY(), 20);
+        debugRenderer.end();
     }
 
     @Override
@@ -162,6 +166,5 @@ public class MainScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 }
