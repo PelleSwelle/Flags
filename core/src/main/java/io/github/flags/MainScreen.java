@@ -32,7 +32,7 @@ public class MainScreen implements Screen {
     public ShapeRenderer debugRenderer;
     private Vector2 screenCoordinates;
     private Vector2 stageCoordinates;
-    float accumulator = 0;
+    private AssemblyBoard board;
 
     public MainScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
@@ -42,7 +42,7 @@ public class MainScreen implements Screen {
         checkButton.pad(20);
         checkButton.addListener(checkCorrectness());
         flag = _flag;
-
+        board = new AssemblyBoard(flag);
         countryNameLabel = new Label(flag.country, ui.skin);
         countryNameLabel.setVisible(false);
         stage = new Stage(parent.viewport);
@@ -72,7 +72,7 @@ public class MainScreen implements Screen {
         return new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                flag.compare();
+                flag.compare();
                 System.out.println("flag is solved? " + flag.isSolved);
                 countryNameLabel.setVisible(flag.isSolved);
             }
@@ -124,6 +124,10 @@ public class MainScreen implements Screen {
         if (flag.reference_displayed) {
             flag.reference.draw(parent.batch);
         }
+        board.setPosition(
+            stage.getWidth() / 2 - board.width / 2,
+            stage.getHeight() / 2 - board.height / 2);
+        board.draw(parent.batch, 0);
         parent.batch.end();
 
         enableInput();

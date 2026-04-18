@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import com.sun.org.apache.xpath.internal.res.XPATHErrorResources_sv;
 
 public class FlagPiece extends Actor {
     private final Sprite sprite;
@@ -18,9 +19,10 @@ public class FlagPiece extends Actor {
     public Vector2 intendedPosition;
     private final Array<Polygon> polygons;
     public boolean isSpriteVisible = true;
+    private String pieceName;
 
     public FlagPiece(String countryName, JsonValue data) {
-        String pieceName = data.name;
+        pieceName = data.name;
         String textureFile = "flags/" + countryName + "/pieces/" + pieceName + ".png";
         this.intendedPosition = getIndendedCoordinates();
         this.dragOffset = new Vector2();
@@ -31,10 +33,17 @@ public class FlagPiece extends Actor {
         this.polygons = getPolygons(data);
 
         addListener(touchAndDragListener);
+        System.out.println("piece name: " + pieceName);
+
     }
 
     private Vector2 getIndendedCoordinates() {
-        return new Vector2(0, 0); // TODO: parse correct position from filename
+        int xStart = pieceName.indexOf("_x") + 2;
+        int yStart = pieceName.indexOf("_y") + 2;
+        return new Vector2(
+            Float.parseFloat(pieceName.substring(xStart, yStart -2)),
+            Float.parseFloat(pieceName.substring(yStart))
+        );
     }
 
     InputListener touchAndDragListener = new InputListener() {
