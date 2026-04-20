@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
 
     private void enableInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            flag.toggleReference();
+            board.toggleGhost();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
@@ -106,24 +106,19 @@ public class GameScreen implements Screen {
         parent.batch.setProjectionMatrix(parent.viewport.getCamera().combined);
         debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(Color.RED);
         screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
-        if (flag.isPolygonsVisible) {
-            flag.drawPolygons(debugRenderer);
-        }
+        flag.setOutlines(debugRenderer, flag.isPolygonsVisible);
         debugRenderer.end();
 
         parent.batch.begin();
 
-        if (flag.reference_displayed) {
-            flag.reference.draw(parent.batch);
-        }
         board.setPosition(
             stage.getWidth() / 2 - board.size.x / 2,
             stage.getHeight() / 2 - board.size.y / 2);
         board.draw(parent.batch, 0);
+
         parent.batch.end();
 
         enableInput();

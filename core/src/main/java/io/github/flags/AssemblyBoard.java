@@ -10,11 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class AssemblyBoard extends Actor {
     Flag flag;
     Vector2 size;
+    Texture reference;
+    public boolean isGhostDisplayed = false;
 
     public AssemblyBoard(Flag flag) {
         this.flag = flag;
-        // placeholder values
         this.size = getDimensions(flag.country);
+        this.reference = new Texture("flags/" + flag.country + "/" + "flag.png");
     }
 
     private Vector2 getDimensions(String countryName) {
@@ -25,9 +27,11 @@ public class AssemblyBoard extends Actor {
         );
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        // draw an outline of the flag to be used to compare with the assembled flag.
+    public void toggleGhost() {
+        isGhostDisplayed = !isGhostDisplayed;
+    }
+
+    public void drawOutline() {
         ShapeRenderer outlineRenderer = new ShapeRenderer();
         outlineRenderer.begin(ShapeRenderer.ShapeType.Line);
         outlineRenderer.setColor(Color.WHITE);
@@ -40,5 +44,19 @@ public class AssemblyBoard extends Actor {
         };
         outlineRenderer.polygon(vertices);
         outlineRenderer.end();
+
+    }
+
+    // TODO: at the moment this displays white, but is at the correct location, so gets the job done for now.
+    public void drawGhost(Batch batch, boolean isVisible) {
+        if (isVisible) {
+            batch.draw(reference, getX(), getY());
+        }
+    }
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        // draw an outline of the flag to be used to compare with the assembled flag.
+        drawOutline();
+        drawGhost(batch, isGhostDisplayed);
     }
 }

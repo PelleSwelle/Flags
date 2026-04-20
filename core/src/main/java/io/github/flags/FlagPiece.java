@@ -1,5 +1,6 @@
 package io.github.flags;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -99,8 +100,7 @@ public class FlagPiece extends Actor {
         sprite.setPosition(getX(), getY());
         sprite.setRotation(getRotation());
 
-        if (isSpriteVisible)
-            sprite.draw(batch);
+        if (isSpriteVisible) { sprite.draw(batch);}
     }
 
     public boolean isPositionCloseEnough() {
