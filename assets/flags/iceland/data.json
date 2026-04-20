@@ -1,6 +1,6 @@
 {
 
-    "iceland_x0_y0": [
+    "iceland1_x0_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -9,7 +9,7 @@
         }
     ]
     ,
-    "iceland_x0_y252.39": [
+    "iceland2_x0_y252.39": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -18,7 +18,7 @@
         }
     ]
     ,
-    "iceland_x0_y288": [
+    "iceland3_x0_y288": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -27,7 +27,7 @@
         }
     ]
     ,
-    "iceland_x252_y0": [
+    "iceland4_x252_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -36,7 +36,7 @@
         }
     ]
     ,
-    "iceland_x288_y0": [
+    "iceland5_x288_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,

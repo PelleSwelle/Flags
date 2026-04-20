@@ -9,7 +9,7 @@ import com.badlogic.gdx.Game;
 
 public class FlagAssembly extends Game {
     // SCREENS
-    private MainScreen mainScreen;
+    private GameScreen gameScreen;
     private MenuScreen menuScreen;
 
     public final static int MENU = 0;
@@ -30,7 +30,7 @@ public class FlagAssembly extends Game {
         viewport = new FitViewport(1028, 800);
         menuScreen = new MenuScreen(this);
         if (currentFlag != null) {
-            mainScreen = new MainScreen(this, currentFlag);
+            gameScreen = new GameScreen(this, currentFlag);
         }
         setScreen(menuScreen);
     }
@@ -43,8 +43,8 @@ public class FlagAssembly extends Game {
                 this.setScreen(menuScreen);
                 break;
             case APPLICATION:
-                if (mainScreen == null) mainScreen = new MainScreen(this, currentFlag);
-                this.setScreen(mainScreen);
+                if (gameScreen == null) gameScreen = new GameScreen(this, currentFlag);
+                this.setScreen(gameScreen);
                 break;
         }
     }

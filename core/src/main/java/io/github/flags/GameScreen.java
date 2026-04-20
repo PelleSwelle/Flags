@@ -6,10 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainScreen implements Screen {
+public class GameScreen implements Screen {
     final FlagAssembly parent;
 
     private Stage stage;
@@ -34,7 +30,7 @@ public class MainScreen implements Screen {
     private Vector2 stageCoordinates;
     private AssemblyBoard board;
 
-    public MainScreen(final FlagAssembly flags, Flag _flag) {
+    public GameScreen(final FlagAssembly flags, Flag _flag) {
         parent = flags;
         debugRenderer = new ShapeRenderer();
         ui = new UI();

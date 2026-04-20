@@ -1,6 +1,6 @@
 {
 
-    "afghanistan_x0_y0": [
+    "afghanistan1_x0_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -9,7 +9,7 @@
         }
     ]
     ,
-    "afghanistan_x255.99_y60.41": [
+    "afghanistan2_x255.99_y60.41": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -33,7 +33,7 @@
         }
     ]
     ,
-    "afghanistan_x300_y0": [
+    "afghanistan3_x300_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
@@ -47,7 +47,7 @@
         }
     ]
     ,
-    "afghanistan_x600_y0": [
+    "afghanistan4_x600_y0": [
 
         {
             "density": 2, "friction": 0, "bounce": 0,
