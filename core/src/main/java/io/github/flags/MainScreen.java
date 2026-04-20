@@ -125,8 +125,8 @@ public class MainScreen implements Screen {
             flag.reference.draw(parent.batch);
         }
         board.setPosition(
-            stage.getWidth() / 2 - board.width / 2,
-            stage.getHeight() / 2 - board.height / 2);
+            stage.getWidth() / 2 - board.size.x / 2,
+            stage.getHeight() / 2 - board.size.y / 2);
         board.draw(parent.batch, 0);
         parent.batch.end();
 
