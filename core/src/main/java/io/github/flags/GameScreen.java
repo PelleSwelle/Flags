@@ -42,6 +42,7 @@ public class GameScreen implements Screen {
         countryNameLabel = new Label(flag.country, ui.skin);
         countryNameLabel.setVisible(false);
         stage = new Stage(parent.viewport);
+
         table = new Table();
         stage.addActor(table);
         table.setFillParent(true);

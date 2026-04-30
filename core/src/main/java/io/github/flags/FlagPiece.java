@@ -35,7 +35,10 @@ public class FlagPiece extends Actor {
 
         addListener(touchAndDragListener);
         System.out.println("piece name: " + pieceName);
+    }
 
+    public void moveToIntentedPosition() {
+        setPosition(intendedPosition.x, intendedPosition.y);
     }
 
     private Vector2 getIndendedCoordinates() {
