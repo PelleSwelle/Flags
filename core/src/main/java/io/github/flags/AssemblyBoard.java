@@ -13,6 +13,12 @@ public class AssemblyBoard extends Actor {
     Texture reference;
     public boolean isGhostDisplayed = false;
 
+    /**
+     * The space in which the flag is to be assembled.
+     *
+     * @param flag The flag on which to base the size and dimensions of the space.
+     * @return An assembly board corresponding to the current flags dimensions.
+     */
     public AssemblyBoard(Flag flag) {
         this.flag = flag;
         this.size = getDimensions(flag.country);
