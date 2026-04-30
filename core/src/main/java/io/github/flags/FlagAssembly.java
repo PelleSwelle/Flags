@@ -20,7 +20,7 @@ public class FlagAssembly extends Game {
 
     public FitViewport viewport;
     public static UI ui;
-    public Flag currentFlag;
+    public static Flag currentFlag;
 
     @Override
     public void create() {

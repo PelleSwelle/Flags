@@ -26,6 +26,7 @@ public class Flag {
     public boolean isPolygonsVisible = false;
     private boolean isSpritesVisible = true;
 
+
     //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
