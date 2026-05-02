@@ -13,57 +13,37 @@ public class GameScreen implements Screen {
     final FlagAssembly flagAssembly;
     private Stage stage;
     private Flag flag;
-    private boolean isDebugEnabled;
     public ShapeRenderer debugRenderer;
+//    private InputHandler inputHandler;
 
     private AssemblyBoard board;
 
     public GameScreen(final FlagAssembly flags, Flag _flag) {
         flagAssembly = flags;
-        stage = new Stage(flagAssembly.viewport);
-
-        debugRenderer = new ShapeRenderer();
         flag = _flag;
-        board = new AssemblyBoard(flag);
+    }
 
-        stage.addActor(new UI().getGameUILayout());
-
-        Gdx.input.setInputProcessor(stage);
-
-        this.isDebugEnabled = false;
+    @Override
+    public void show() {
+        stage = new Stage(flagAssembly.viewport);
+        stage.addActor(flagAssembly.ui.getGameUILayout());
 
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
-    }
-    @Override
-    public void show() {
 
+        Gdx.input.setInputProcessor(stage);
+
+        debugRenderer = new ShapeRenderer();
+        board = new AssemblyBoard(flag);
     }
 
     private void enableInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            board.toggleGhost();
-        }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            flag.togglePolygons();
-        }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            flag.toggleSprites();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            flag.compare();
-            if (isDebugEnabled) {
-                flag.print();
-            }
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            isDebugEnabled = !isDebugEnabled;
-        }
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+//            flag.compare();
+//        }
     }
 
     @Override
@@ -87,7 +67,7 @@ public class GameScreen implements Screen {
 
         flagAssembly.batch.end();
 
-        enableInput();
+        InputHandler.handleInput(flag, board);
 
         stage.act(delta);
         stage.draw();
