@@ -19,7 +19,7 @@ public class UI {
     public Label countryNameLabel;
     private Table table;
     private TextButton checkButton;
-    private TextButton outlinesButton;
+    public TextButton outlinesButton;
     private FlagAssembly flagAssembly;
 
     public UI(FlagAssembly assembly) {
@@ -88,7 +88,6 @@ public class UI {
             public void changed(ChangeEvent event, Actor actor) {
                 Command command = new InputController.toggleDebugCommand(flagAssembly);
                 command.execute();
-                outlinesButton.setText("Debug: " + flagAssembly.isDebugEnabled);
             }
         };
     }

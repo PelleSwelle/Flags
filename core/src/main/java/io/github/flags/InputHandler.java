@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 
 public class InputHandler {
 
-    public static void handleInput(Flag flag, AssemblyBoard board) {
+    public static void handleInput(FlagAssembly assembly, Flag flag, AssemblyBoard board) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             new InputController.CompareCommand(flag).execute();
         }
@@ -19,7 +19,7 @@ public class InputHandler {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            flag.togglePolygons();
+            new InputController.toggleDebugCommand(assembly).execute();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {

@@ -38,14 +38,6 @@ public class GameScreen implements Screen {
         board = new AssemblyBoard(flag);
     }
 
-    private void enableInput() {
-
-
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-//            flag.compare();
-//        }
-    }
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
@@ -55,7 +47,8 @@ public class GameScreen implements Screen {
         Vector2 screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         Vector2 stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
-        flag.setOutlines(debugRenderer, flag.isPolygonsVisible);
+        flag.setOutlines(debugRenderer, flagAssembly.isDebugEnabled);
+        
         debugRenderer.end();
 
         flagAssembly.batch.begin();
@@ -67,7 +60,7 @@ public class GameScreen implements Screen {
 
         flagAssembly.batch.end();
 
-        InputHandler.handleInput(flag, board);
+        InputHandler.handleInput(flagAssembly, flag, board);
 
         stage.act(delta);
         stage.draw();

@@ -11,7 +11,9 @@ public class InputController {
         }
         @Override
         public void execute() {
+            System.out.println("toggle debug mode.");
             flagAssembly.setDebugEnabled(!flagAssembly.isDebugEnabled);
+            flagAssembly.ui.outlinesButton.setText("Debug: " + flagAssembly.isDebugEnabled);
         }
     }
 

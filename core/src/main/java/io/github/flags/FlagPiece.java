@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -91,7 +92,15 @@ public class FlagPiece extends Actor {
 
     public void drawPolygons(ShapeRenderer renderer) {
         for (Polygon p : new Array.ArrayIterator<>(polygons)) {
-            renderer.polygon(p.getTransformedVertices());
+            float[] vertices = p.getVertices();
+            float[] transformed = new float[vertices.length];
+            float cos = MathUtils.cosDeg(getRotation());
+            float sin = MathUtils.sinDeg(getRotation());
+            for (int i = 0; i < vertices.length; i += 2) {
+                transformed[i] = vertices[i] * cos - vertices[i+1] * sin + getX();
+                transformed[i+1] = vertices[i] * sin + vertices[i+1] * cos + getY();
+            }
+            renderer.polygon(transformed);
         }
     }
 
