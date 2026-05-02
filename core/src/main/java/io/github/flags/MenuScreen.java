@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import static io.github.flags.FlagAssembly.ui;
-
 public class MenuScreen implements Screen {
     private FlagAssembly game;
     private TextButton randomFlagButton;
@@ -22,7 +20,7 @@ public class MenuScreen implements Screen {
     public MenuScreen(FlagAssembly flagAssembly) {
         game = flagAssembly;
         stage = new Stage(game.viewport);
-        randomFlagButton = new TextButton("Assemble random flag", ui.skin, "default");
+        randomFlagButton = new TextButton("Assemble random flag", game.ui.skin, "default");
         randomFlagButton.pad(20);
         table = new Table();
         table.setFillParent(true);

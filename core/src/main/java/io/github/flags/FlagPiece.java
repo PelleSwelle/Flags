@@ -1,6 +1,5 @@
 package io.github.flags;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.sun.org.apache.xpath.internal.res.XPATHErrorResources_sv;
 
 public class FlagPiece extends Actor {
     private final Sprite sprite;
@@ -34,7 +32,6 @@ public class FlagPiece extends Actor {
         this.polygons = getPolygons(data);
 
         addListener(touchAndDragListener);
-        System.out.println("piece name: " + pieceName);
     }
 
     public void moveToIntentedPosition() {

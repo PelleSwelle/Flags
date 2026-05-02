@@ -14,21 +14,29 @@ public class FlagAssembly extends Game {
 
     public final static int MENU = 0;
     public final static int APPLICATION = 1;
+    public static InputController inputController = new InputController();
 
     public SpriteBatch batch;
     public PolygonSpriteBatch polySpriteBatch;
 
     public FitViewport viewport;
-    public static UI ui;
+    public UI ui;
     public static Flag currentFlag;
+
+    public boolean isDebugEnabled = false;
+
+    public void setDebugEnabled(boolean enabled) {
+        isDebugEnabled = enabled;
+    }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         polySpriteBatch = new PolygonSpriteBatch();
-        ui = new UI();
+        ui = new UI(this);
         viewport = new FitViewport(1028, 800);
         menuScreen = new MenuScreen(this);
+
         if (currentFlag != null) {
             gameScreen = new GameScreen(this, currentFlag);
         }

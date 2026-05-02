@@ -1,21 +1,12 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class Flag {
     public String country;
@@ -76,8 +67,11 @@ public class Flag {
         }
     }
 
-    public void setOutlines() {
-
+    public void moveToIntendedPosition() {
+        System.out.println("moved all pieces to intended position.");
+        for (FlagPiece piece : pieces) {
+            piece.moveToIntentedPosition();
+        }
     }
 
     public void drawPolygons(ShapeRenderer renderer) {
