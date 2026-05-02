@@ -1,37 +1,36 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class Flag {
     public String country;
     public Sprite reference;
     public ArrayList<FlagPiece> pieces;
     private final String path = "flags/";
-    public boolean reference_displayed = false;
     public boolean isSolved = false;
     public boolean isPolygonsVisible = false;
     private boolean isSpritesVisible = true;
+
 
     //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
         pieces = loadPieces();
-        reference = new Sprite(new Texture(path+country+"/flag.png"));
-        reference.setPosition(0, 0); // TODO: this should be in the middle of the screen
+    }
+
+    public void setOutlines(ShapeRenderer renderer, boolean isVisible) {
+        if (isVisible) {
+            for (FlagPiece p : pieces) {
+                renderer.setColor(p.isPositionCloseEnough() ? Color.GREEN : Color.RED);
+                p.drawPolygons(renderer);
+            }
+        }
     }
 
     public void togglePolygons() {
@@ -43,10 +42,6 @@ public class Flag {
         for (FlagPiece p: pieces) {
             p.isSpriteVisible = isSpritesVisible;
         }
-    }
-
-    public void toggleReference() {
-        reference_displayed = !reference_displayed;
     }
 
     public void compare() {
@@ -69,6 +64,13 @@ public class Flag {
                 Math.abs(pieces.get(i).intendedPosition.y - pieces.get(i).getY())
                 ) + "\n"
             );
+        }
+    }
+
+    public void moveToIntendedPosition() {
+        System.out.println("moved all pieces to intended position.");
+        for (FlagPiece piece : pieces) {
+            piece.moveToIntentedPosition();
         }
     }
 

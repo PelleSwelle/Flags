@@ -6,127 +6,61 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-    final FlagAssembly parent;
-
+    final FlagAssembly flagAssembly;
     private Stage stage;
     private Flag flag;
-    private boolean isDebugEnabled;
-    private ShapeRenderer cursor;
-    private Table table;
-    private TextButton checkButton;
-    private Label countryNameLabel;
-    private UI ui;
     public ShapeRenderer debugRenderer;
-    private Vector2 screenCoordinates;
-    private Vector2 stageCoordinates;
+//    private InputHandler inputHandler;
+
     private AssemblyBoard board;
 
     public GameScreen(final FlagAssembly flags, Flag _flag) {
-        parent = flags;
-        debugRenderer = new ShapeRenderer();
-        ui = new UI();
-        checkButton = new TextButton("Check", ui.skin, "default");
-        checkButton.pad(20);
-        checkButton.addListener(checkCorrectness());
+        flagAssembly = flags;
         flag = _flag;
-        board = new AssemblyBoard(flag);
-        countryNameLabel = new Label(flag.country, ui.skin);
-        countryNameLabel.setVisible(false);
-        stage = new Stage(parent.viewport);
-        table = new Table();
-        stage.addActor(table);
-        table.setFillParent(true);
-        table.setDebug(true);
-        table.add(checkButton);
-        table.row();
-        table.add(countryNameLabel);
-        table.right().top();
+    }
 
-        Gdx.input.setInputProcessor(stage);
-
-        this.isDebugEnabled = false;
+    @Override
+    public void show() {
+        stage = new Stage(flagAssembly.viewport);
+        stage.addActor(flagAssembly.ui.getGameUILayout());
 
         for (FlagPiece piece : flag.pieces) {
             stage.addActor(piece);
         }
-    }
-    @Override
-    public void show() {
 
-    }
+        Gdx.input.setInputProcessor(stage);
 
-    private ChangeListener checkCorrectness() {
-        return new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                flag.compare();
-                System.out.println("flag is solved? " + flag.isSolved);
-                countryNameLabel.setVisible(flag.isSolved);
-            }
-        };
-    }
-
-    private void enableInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            flag.toggleReference();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            flag.togglePolygons();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            flag.toggleSprites();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            flag.compare();
-            if (isDebugEnabled) {
-                flag.print();
-            }
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            isDebugEnabled = !isDebugEnabled;
-        }
+        debugRenderer = new ShapeRenderer();
+        board = new AssemblyBoard(flag);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear((float).20, (float).20, (float).20, 1, true);
-        parent.batch.setProjectionMatrix(parent.viewport.getCamera().combined);
-        debugRenderer.setProjectionMatrix(parent.viewport.getCamera().combined);
+        flagAssembly.batch.setProjectionMatrix(flagAssembly.viewport.getCamera().combined);
+        debugRenderer.setProjectionMatrix(flagAssembly.viewport.getCamera().combined);
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(Color.RED);
-        screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
+        Vector2 screenCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        Vector2 stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
-        if (flag.isPolygonsVisible) {
-            flag.drawPolygons(debugRenderer);
-        }
+        flag.setOutlines(debugRenderer, flagAssembly.isDebugEnabled);
+        
         debugRenderer.end();
 
-        parent.batch.begin();
+        flagAssembly.batch.begin();
 
-        if (flag.reference_displayed) {
-            flag.reference.draw(parent.batch);
-        }
         board.setPosition(
             stage.getWidth() / 2 - board.size.x / 2,
             stage.getHeight() / 2 - board.size.y / 2);
-        board.draw(parent.batch, 0);
-        parent.batch.end();
+        board.draw(flagAssembly.batch, 0);
 
-        enableInput();
+        flagAssembly.batch.end();
+
+        InputHandler.handleInput(flagAssembly, flag, board);
 
         stage.act(delta);
         stage.draw();
@@ -146,7 +80,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        parent.viewport.update(width, height);
+        flagAssembly.viewport.update(width, height);
     }
 
     @Override
