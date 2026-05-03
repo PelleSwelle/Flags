@@ -16,8 +16,6 @@ public class GameScreen implements Screen {
     public ShapeRenderer debugRenderer;
 //    private InputHandler inputHandler;
 
-    private AssemblyBoard board;
-
     public GameScreen(final FlagAssembly flags, Flag _flag) {
         flagAssembly = flags;
         flag = _flag;
@@ -35,7 +33,6 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         debugRenderer = new ShapeRenderer();
-        board = new AssemblyBoard(flag);
     }
 
     @Override
@@ -48,19 +45,19 @@ public class GameScreen implements Screen {
         Vector2 stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
         flag.setOutlines(debugRenderer, flagAssembly.isDebugEnabled);
-        
+
         debugRenderer.end();
 
         flagAssembly.batch.begin();
 
-        board.setPosition(
-            stage.getWidth() / 2 - board.size.x / 2,
-            stage.getHeight() / 2 - board.size.y / 2);
-        board.draw(flagAssembly.batch, 0);
+        flag.board.setPosition(
+            stage.getWidth() / 2 - flag.board.dimensions.x / 2,
+            stage.getHeight() / 2 - flag.board.dimensions.y / 2);
+        flag.board.draw(flagAssembly.batch, 0);
 
         flagAssembly.batch.end();
 
-        InputHandler.handleInput(flagAssembly, flag, board);
+        InputHandler.handleInput(flagAssembly, flag);
 
         stage.act(delta);
         stage.draw();

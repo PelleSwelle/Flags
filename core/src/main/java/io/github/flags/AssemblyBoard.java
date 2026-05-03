@@ -8,29 +8,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class AssemblyBoard extends Actor {
-    Flag flag;
-    Vector2 size;
+    Vector2 dimensions;
     Texture reference;
     public boolean isGhostDisplayed = false;
 
     /**
      * The space in which the flag is to be assembled.
      *
-     * @param flag The flag on which to base the size and dimensions of the space.
+     * @param dimensions The dimensions on which to base the size and dimensions of the space.
      * @return An assembly board corresponding to the current flags dimensions.
      */
-    public AssemblyBoard(Flag flag) {
-        this.flag = flag;
-        this.size = getDimensions(flag.country);
-        this.reference = new Texture("flags/" + flag.country + "/" + "flag.png");
-    }
-
-    private Vector2 getDimensions(String countryName) {
-        Texture t = new Texture("flags/" + countryName + "/flag.png");
-        return new Vector2(
-            t.getWidth(),
-            t.getHeight()
-        );
+    public AssemblyBoard(Vector2 dimensions) {
+        this.dimensions = dimensions;
     }
 
     public void toggleGhost() {
@@ -44,9 +33,9 @@ public class AssemblyBoard extends Actor {
 
         float[] vertices = new float[] {
             getX(), getY(),
-            getX(), getY() + size.y,
-            getX() + size.x, getY() + size.y,
-            getX() + size.x, getY()
+            getX(), getY() + dimensions.y,
+            getX() + dimensions.x, getY() + dimensions.y,
+            getX() + dimensions.x, getY()
         };
         outlineRenderer.polygon(vertices);
         outlineRenderer.end();
