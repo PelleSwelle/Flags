@@ -7,44 +7,79 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MenuScreen implements Screen {
     private FlagAssembly game;
     private TextButton randomFlagButton;
+    private TextButton loadFlagButton;
     private Table table;
     private Stage stage;
-//    private UI ui;
+    private SelectBox selectBox;
 
     public MenuScreen(FlagAssembly flagAssembly) {
         game = flagAssembly;
         stage = new Stage(game.viewport);
-        randomFlagButton = new TextButton("Assemble random flag", game.ui.skin, "default");
+        randomFlagButton = new TextButton("Load random flag", game.ui.skin, "default");
         randomFlagButton.pad(20);
-        table = new Table();
-        table.setFillParent(true);
-        table.setDebug(true);
-        table.add(randomFlagButton);
-        stage.addActor(table);
-
         randomFlagButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 loadRandomFlag();
             }
         });
+
+        loadFlagButton = new TextButton("Load Flag", game.ui.skin, "default");
+        loadFlagButton.pad(20);
+        loadFlagButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                loadFlag(selectBox.getSelected().toString());
+            }
+        });
+        selectBox = new SelectBox(game.ui.skin);
+
+        selectBox.setItems(createSelectList());
+
+        selectBox.getSelected();
+
+        table = new Table();
+        table.setFillParent(true);
+        table.setDebug(true);
+        table.add(randomFlagButton);
+        table.add(selectBox);
+        table.row();
+        table.add(loadFlagButton);
+        stage.addActor(table);
+
     }
 
-    private String getRandomCountryName() {
-        String[] countries = {
+    private Array<String> createSelectList() {
+        Array<String> names = new Array<>();
+
+        for (String name : getAllCountryNames()) {
+            names.add(name);
+        }
+
+        return names;
+    }
+
+    private String[] getAllCountryNames() {
+        return new String[] {
             "afghanistan",
             "iceland",
             "liberia",
             "marshall_islands"
         };
-        int randomNumber = (int)(Math.random() * (countries.length - 0)) + 0;
-        return countries[randomNumber];
+    }
+
+    private String getRandomCountryName() {
+
+        int randomNumber = (int)(Math.random() * (getAllCountryNames().length - 0)) + 0;
+        return getAllCountryNames()[randomNumber];
     }
 
     private void loadRandomFlag() {

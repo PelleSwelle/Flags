@@ -19,7 +19,7 @@ public class UI {
     public Label countryNameLabel;
     private Table table;
     private TextButton checkButton;
-    public TextButton outlinesButton;
+    public TextButton debugButton;
     private FlagAssembly flagAssembly;
 
     public UI(FlagAssembly assembly) {
@@ -60,21 +60,24 @@ public class UI {
 
     public Table getGameUILayout() {
 
+        // CHECK BUTTON
         checkButton = new TextButton("Check", skin, "default");
         checkButton.pad(20);
         checkButton.addListener(checkCorrectness(FlagAssembly.currentFlag));
 
+        // COUNTRY NAME LABEL
         countryNameLabel = new Label(FlagAssembly.currentFlag.country, skin);
         countryNameLabel.setVisible(false);
 
-        outlinesButton = new TextButton("Debug: " + flagAssembly.isDebugEnabled, skin, "default");
-        outlinesButton.addListener(toggleDebugMode());
+        // DEBUG BUTTON
+        debugButton = new TextButton("Debug: " + flagAssembly.isDebugEnabled, skin, "default");
+        debugButton.addListener(toggleDebugMode());
 
         Table table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
         table.add(checkButton);
-        table.add(outlinesButton);
+        table.add(debugButton);
         table.row();
         table.add(countryNameLabel);
         table.right().top();
