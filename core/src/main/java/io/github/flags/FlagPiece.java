@@ -20,11 +20,13 @@ public class FlagPiece extends Actor {
     private final Array<Polygon> polygons;
     public boolean isSpriteVisible = true;
     private String pieceName;
+    private Flag parent;
 
-    public FlagPiece(String countryName, JsonValue data) {
+    public FlagPiece(Flag flag, JsonValue data) {
         pieceName = data.name;
-        String textureFile = "flags/" + countryName + "/pieces/" + pieceName + ".png";
-        this.intendedPosition = getIndendedCoordinates();
+        this.parent = flag;
+        String textureFile = "flags/" + flag.country + "/pieces/" + pieceName + ".png";
+        this.intendedPosition = getIndendedCoordinatesFromFileName();
         this.dragOffset = new Vector2();
         this.sprite = new Sprite(new Texture(textureFile));
 
@@ -39,13 +41,16 @@ public class FlagPiece extends Actor {
         setPosition(intendedPosition.x, intendedPosition.y);
     }
 
-    private Vector2 getIndendedCoordinates() {
+    private Vector2 getIndendedCoordinatesFromFileName() {
         int xStart = pieceName.indexOf("_x") + 2;
         int yStart = pieceName.indexOf("_y") + 2;
-        return new Vector2(
-            Float.parseFloat(pieceName.substring(xStart, yStart -2)),
-            Float.parseFloat(pieceName.substring(yStart))
-        );
+        float x = Float.parseFloat(pieceName.substring(xStart, yStart -2));
+        float y = Float.parseFloat(pieceName.substring(yStart));
+        return new Vector2(x, y);
+    }
+
+    public void setIntendedPosition(Vector2 position) {
+        this.intendedPosition = position;
     }
 
     InputListener touchAndDragListener = new InputListener() {

@@ -1,7 +1,7 @@
 package io.github.flags;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.*;
@@ -10,18 +10,28 @@ import java.util.ArrayList;
 
 public class Flag {
     public String country;
-    public Sprite reference;
     public ArrayList<FlagPiece> pieces;
     private final String path = "flags/";
     public boolean isSolved = false;
     public boolean isPolygonsVisible = false;
     private boolean isSpritesVisible = true;
-
+    public AssemblyBoard board;
+    private Texture reference;
 
     //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
+        board = new AssemblyBoard(getOuterDimensions(country));
         pieces = loadPieces();
+        reference = new Texture("flags/" + country + "/" + "flag.png");
+    }
+
+    public Vector2 getOuterDimensions(String countryName) {
+        Texture t = new Texture("flags/" + countryName + "/flag.png");
+        return new Vector2(
+            t.getWidth(),
+            t.getHeight()
+        );
     }
 
     public void setOutlines(ShapeRenderer renderer, boolean isVisible) {
@@ -50,6 +60,7 @@ public class Flag {
                 System.out.println("You lose!");
             } else {
                 System.out.println("You win!");
+                piece.moveToIntentedPosition();
                 isSolved = true;
                 break;
             }
@@ -85,7 +96,7 @@ public class Flag {
         JsonValue root = new JsonReader().parse(Gdx.files.internal(path + country + "/data.json"));
 
         for (JsonValue pieceData = root.child; pieceData != null; pieceData = pieceData.next) {
-            pieces.add(new FlagPiece(country, pieceData));
+            pieces.add(new FlagPiece(this, pieceData));
         }
 
         return pieces;

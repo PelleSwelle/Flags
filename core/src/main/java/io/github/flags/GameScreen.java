@@ -16,8 +16,6 @@ public class GameScreen implements Screen {
     public ShapeRenderer debugRenderer;
 //    private InputHandler inputHandler;
 
-    private AssemblyBoard board;
-
     public GameScreen(final FlagAssembly flags, Flag _flag) {
         flagAssembly = flags;
         flag = _flag;
@@ -28,14 +26,21 @@ public class GameScreen implements Screen {
         stage = new Stage(flagAssembly.viewport);
         stage.addActor(flagAssembly.ui.getGameUILayout());
 
+        flag.board.setPosition(
+            stage.getWidth() / 2 - flag.board.dimensions.x / 2,
+            stage.getHeight() / 2 - flag.board.dimensions.y / 2);
+
+
         for (FlagPiece piece : flag.pieces) {
+            float x_translated = piece.getX() + flag.board.getX();
+            float y_translated = piece.getY() + flag.board.getY();
+            piece.setIntendedPosition(new Vector2(x_translated, y_translated));
             stage.addActor(piece);
         }
 
         Gdx.input.setInputProcessor(stage);
 
         debugRenderer = new ShapeRenderer();
-        board = new AssemblyBoard(flag);
     }
 
     @Override
@@ -48,19 +53,18 @@ public class GameScreen implements Screen {
         Vector2 stageCoordinates = stage.screenToStageCoordinates(screenCoordinates);
 
         flag.setOutlines(debugRenderer, flagAssembly.isDebugEnabled);
-        
+
         debugRenderer.end();
 
         flagAssembly.batch.begin();
 
-        board.setPosition(
-            stage.getWidth() / 2 - board.size.x / 2,
-            stage.getHeight() / 2 - board.size.y / 2);
-        board.draw(flagAssembly.batch, 0);
+//        DRAW ASSEMBLY BOARD
+        flag.board.draw(flagAssembly.batch, 0);
+        System.out.println("Assembly board coordinates: " + flag.board.getX() + " " + flag.board.getY());
 
         flagAssembly.batch.end();
 
-        InputHandler.handleInput(flagAssembly, flag, board);
+        InputHandler.handleInput(flagAssembly, flag);
 
         stage.act(delta);
         stage.draw();
