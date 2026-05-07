@@ -21,8 +21,8 @@ public class Flag {
     //    TODO: selection of country
     public Flag(String country) {
         this.country = country;
-        pieces = loadPieces();
         board = new AssemblyBoard(getOuterDimensions(country));
+        pieces = loadPieces();
         reference = new Texture("flags/" + country + "/" + "flag.png");
     }
 
@@ -95,7 +95,7 @@ public class Flag {
         JsonValue root = new JsonReader().parse(Gdx.files.internal(path + country + "/data.json"));
 
         for (JsonValue pieceData = root.child; pieceData != null; pieceData = pieceData.next) {
-            pieces.add(new FlagPiece(country, pieceData));
+            pieces.add(new FlagPiece(this, pieceData));
         }
 
         return pieces;

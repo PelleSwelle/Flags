@@ -26,7 +26,15 @@ public class GameScreen implements Screen {
         stage = new Stage(flagAssembly.viewport);
         stage.addActor(flagAssembly.ui.getGameUILayout());
 
+        flag.board.setPosition(
+            stage.getWidth() / 2 - flag.board.dimensions.x / 2,
+            stage.getHeight() / 2 - flag.board.dimensions.y / 2);
+
+
         for (FlagPiece piece : flag.pieces) {
+            float x_translated = piece.getX() + flag.board.getX();
+            float y_translated = piece.getY() + flag.board.getY();
+            piece.setIntendedPosition(new Vector2(x_translated, y_translated));
             stage.addActor(piece);
         }
 
@@ -50,10 +58,9 @@ public class GameScreen implements Screen {
 
         flagAssembly.batch.begin();
 
-        flag.board.setPosition(
-            stage.getWidth() / 2 - flag.board.dimensions.x / 2,
-            stage.getHeight() / 2 - flag.board.dimensions.y / 2);
+//        DRAW ASSEMBLY BOARD
         flag.board.draw(flagAssembly.batch, 0);
+        System.out.println("Assembly board coordinates: " + flag.board.getX() + " " + flag.board.getY());
 
         flagAssembly.batch.end();
 
