@@ -60,6 +60,7 @@ public class Flag {
                 System.out.println("You lose!");
             } else {
                 System.out.println("You win!");
+                piece.moveToIntentedPosition();
                 isSolved = true;
                 break;
             }
