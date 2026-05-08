@@ -2,6 +2,7 @@ package io.github.flags;
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Game;
@@ -24,10 +25,20 @@ public class FlagAssembly extends Game {
     public UI ui;
     public static Flag currentFlag;
 
+    public int currentScore;
+
     public boolean isDebugEnabled = false;
 
     public void setDebugEnabled(boolean enabled) {
         isDebugEnabled = enabled;
+    }
+
+    private Array<Flag> getSolvedFlags() {
+
+    }
+
+    private Array<Flag> getUnsolvedFlags() {
+
     }
 
     @Override

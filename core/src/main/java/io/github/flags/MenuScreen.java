@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -19,6 +20,7 @@ public class MenuScreen implements Screen {
     private Table table;
     private Stage stage;
     private SelectBox selectBox;
+    private Label currentScoreLabel;
 
     public MenuScreen(FlagAssembly flagAssembly) {
         game = flagAssembly;
@@ -31,6 +33,8 @@ public class MenuScreen implements Screen {
                 loadRandomFlag();
             }
         });
+
+        currentScoreLabel = new Label("Current score: " + game.currentScore, game.ui.skin);
 
         loadFlagButton = new TextButton("Load Flag", game.ui.skin, "default");
         loadFlagButton.pad(20);
@@ -53,6 +57,7 @@ public class MenuScreen implements Screen {
         table.add(selectBox);
         table.row();
         table.add(loadFlagButton);
+        table.add(currentScoreLabel);
         stage.addActor(table);
 
     }
