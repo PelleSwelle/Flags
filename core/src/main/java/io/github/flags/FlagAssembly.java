@@ -34,11 +34,11 @@ public class FlagAssembly extends Game {
     }
 
     private Array<Flag> getSolvedFlags() {
-
+        return new Array<>();
     }
 
     private Array<Flag> getUnsolvedFlags() {
-
+        return new Array<>();
     }
 
     @Override
