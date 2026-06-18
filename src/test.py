@@ -1,3 +1,3 @@
-from API import get_flag
+from API import get_flag_by_id
 
-print(get_flag(2))
+print(get_flag_by_id(2))

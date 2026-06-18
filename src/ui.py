@@ -1,4 +1,3 @@
-from typing import List
 import pygame_gui
 import pygame
 from GlobalValues import Global
@@ -29,3 +28,11 @@ class UI:
         text="load selected flag",
         manager=manager,
     )
+
+    @classmethod
+    def handle_button_event(cls, event, game):
+        if event.ui_element == cls.hello_button:
+            print("hemnelo")
+        if event.ui_element == cls.load_button:
+            flag_id = int(cls.flags_dropdown.selected_option[1])
+            game.set_current_flag(flag_id)
