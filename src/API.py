@@ -16,42 +16,6 @@ def dataclass_factory(cursor, row):
 conn = sqlite3.connect(Global.DATABASE_PATH)
 conn.row_factory = dataclass_factory
 
-def get_flag_by_name(name: str):
-    param = (name,)
-    cursor = conn.execute(
-        """
-        select 
-            f.id,
-            f.popular_name,
-            f.official_state_name,
-            f.endonym,
-            f.capital_city,
-            r.name as region,
-            ca.name as category,
-            co.name as continent
-        from 
-            flags f
-        join regions r on r.id = f.region_id
-        join categories ca on ca.id = f.category_id
-        join Continents co on co.id = f.continent_id
-        where f.popular_name = ?
-        """,
-        param
-    )
-    data: Flag = cursor.fetchone()
-    pieces = get_flag_pieces(data.id)
-
-    return Flag(
-        id=data.id,
-        popular_name=data.popular_name,
-        official_state_name=data.official_state_name,
-        endonym=data.endonym,
-        capital_city=data.capital_city,
-        region=data.region,
-        category=data.category,
-        continent=data.continent,
-        pieces=pieces,
-    )
 
 def get_flag_by_id(id: int):
     param = (id,)
@@ -121,8 +85,8 @@ def get_flag_pieces(id: int) -> List[Piece]:
     return pieces
 
 
-def get_all_country_names() -> list[tuple[str, str]]:
+def get_all_country_names() -> list[tuple[int, str]]:
     cursor = conn.execute("""
         select id, popular_name from flags
     """)
-    return [(row.popular_name, str(row.id)) for row in cursor.fetchall()]
+    return [(row.id, row.popular_name) for row in cursor.fetchall()]
