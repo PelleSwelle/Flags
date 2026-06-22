@@ -1,7 +1,7 @@
 from typing import List
 import pygame
-from API import get_all_country_names
 from Flag.Piece import Piece
+from Flag.Flag import Flag
 
 
 class Controller:
@@ -17,9 +17,13 @@ class Controller:
     def handle_key_event(self, event, game):
         if event.key == pygame.K_TAB:
             self.select_next_piece(game.current_flag.pieces)
-        if event.key == pygame.K_a:
-            print(get_all_country_names())
         if event.key == pygame.K_UP:
             game.current_flag.move_active_piece_up()
         if event.key == pygame.K_DOWN:
             game.current_flag.move_active_piece_down()
+        if event.key == pygame.K_c:
+            self.check_correctness(game.current_flag)
+
+    def check_correctness(self, flag: Flag):
+        score = flag.compare()
+        print(f"Flag match: {score:.1f}%")

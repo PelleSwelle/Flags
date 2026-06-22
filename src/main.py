@@ -38,7 +38,6 @@ class App:
             self.game.current_flag.draw_pieces()
         self.debug_ui.draw(Global.display_surf)
         pygame.display.flip()
-        self.clock.tick()
         Global.display_surf.fill("black")
 
     def on_cleanup(self):

@@ -10,13 +10,10 @@ class Game:
         self.cursor = self.connection.cursor()
         self.current_flag: Flag.Flag | None = None
 
-    def set_current_flag(self, flag_id_or_name: int | str):
-        if isinstance(flag_id_or_name, int):
-            self.current_flag = API.get_flag_by_id(flag_id_or_name)
-        elif isinstance(flag_id_or_name, str):
-            self.current_flag = API.get_flag_by_name(flag_id_or_name)
-        
-        self.current_flag.pieces[0].is_active = True
+    def set_current_flag(self, id):
+        self.current_flag = API.get_flag_by_id(id)
+        if self.current_flag and self.current_flag.pieces:
+            self.current_flag.pieces[0].is_active = True
 
     def update(self):
         if self.current_flag:

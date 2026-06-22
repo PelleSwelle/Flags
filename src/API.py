@@ -55,8 +55,27 @@ def get_flag_by_id(id: int):
         pieces=pieces,
     )
 
+
 def load_image(path: str) -> pygame.Surface:
     return pygame.image.load(path).convert_alpha()
+
+
+def set_flag_score(flag_id: int, score: float):
+    param1 = (score, flag_id)
+    conn.execute(
+        """
+        update
+            flags
+        set
+            score = ?
+        where
+            id = ?
+        """,
+        param1,
+    )
+    conn.commit()
+    print(f"wrote score {score} to database on flag with id {flag_id}")
+
 
 def get_flag_pieces(id: int) -> List[Piece]:
     param = (id,)
@@ -77,9 +96,11 @@ def get_flag_pieces(id: int) -> List[Piece]:
         piece = Piece(
             id=data.id,
             image=load_image(data.asset_path),
-            flag_id=id
+            correct_x=data.position_x,
+            correct_y=data.position_y,
+            asset_path=data.asset_path,
+            flag_id=id,
         )
-        piece.rect.topleft = (data.position_x, data.position_y)
         pieces.append(piece)
 
     return pieces
