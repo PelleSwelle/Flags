@@ -14,6 +14,7 @@ class Piece:
     rect: pygame.Rect = field(init=False)
     flag_id: int
     is_active: bool = False
+    meaning: str = ""
 
     def __post_init__(self):
         self.rect = self.image.get_rect()

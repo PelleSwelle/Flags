@@ -85,7 +85,8 @@ def get_flag_pieces(id: int) -> List[Piece]:
             pieces.id,
             pieces.position_x,
             pieces.position_y,
-            pieces.asset_path
+            pieces.asset_path,
+            pieces.meaning
         from pieces
             where pieces.flag_id = ?
         """,
@@ -100,6 +101,7 @@ def get_flag_pieces(id: int) -> List[Piece]:
             correct_y=data.position_y,
             asset_path=data.asset_path,
             flag_id=id,
+            meaning=data.meaning or "",
         )
         pieces.append(piece)
 
@@ -107,7 +109,23 @@ def get_flag_pieces(id: int) -> List[Piece]:
 
 
 def get_all_country_names() -> list[tuple[int, str]]:
-    cursor = conn.execute("""
+    cursor = conn.execute(
+        """
         select id, popular_name from flags
-    """)
+    """
+    )
+    return [(row.id, row.popular_name) for row in cursor.fetchall()]
+
+
+def get_playable_country_names() -> list[tuple[int, str]]:
+    cursor = conn.execute(
+        """
+        select 
+            flags.id, popular_name
+        from 
+            flags
+        join pieces on flags.id = pieces.flag_id
+        group by flag_id
+    """
+    )
     return [(row.id, row.popular_name) for row in cursor.fetchall()]

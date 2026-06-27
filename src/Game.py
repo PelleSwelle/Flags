@@ -9,6 +9,7 @@ class Game:
         self.connection = sqlite3.connect(database_path)
         self.cursor = self.connection.cursor()
         self.current_flag: Flag.Flag | None = None
+        self.pass_threshold = 80.0
 
     def set_current_flag(self, id):
         self.current_flag = API.get_flag_by_id(id)

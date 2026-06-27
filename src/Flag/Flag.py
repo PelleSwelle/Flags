@@ -78,6 +78,22 @@ class Flag:
             Global.display_surf, (255, 255, 255), self.assembly_area_rect, 2
         )
 
+        self.draw_active_outline()
+        self.display_score()
+
+    def display_score(self):
+        if self.score is not None:
+            font = pygame.font.Font(None, 36)
+            text = font.render(f"Score: {self.score:.1f}%", True, (255, 255, 255))
+            text_rect = text.get_rect(
+                center=(
+                    self.assembly_area_rect.centerx,
+                    self.assembly_area_rect.bottom + 30,
+                )
+            )
+            Global.display_surf.blit(text, text_rect)
+
+    def draw_active_outline(self):
         for piece in self.pieces:
             if piece.is_active:
                 screen_x = self.assembly_area_rect.x + int(piece.rect.x - self.min_x)
@@ -89,16 +105,64 @@ class Flag:
                     3,
                 )
 
-        if self.score is not None:
-            font = pygame.font.Font(None, 36)
-            text = font.render(f"Score: {self.score:.1f}%", True, (255, 255, 255))
-            text_rect = text.get_rect(
-                center=(
-                    self.assembly_area_rect.centerx,
-                    self.assembly_area_rect.bottom + 30,
-                )
+    def draw_hover_tooltip(self):
+        mouse_pos = pygame.mouse.get_pos()
+        font = pygame.font.Font(None, 22)
+        max_tooltip_width = 300
+
+        for piece in self.pieces:
+            screen_x = self.assembly_area_rect.x + int(piece.rect.x - self.min_x)
+            screen_y = self.assembly_area_rect.y + int(piece.rect.y - self.min_y)
+            piece_rect = pygame.Rect(
+                screen_x, screen_y, piece.rect.width, piece.rect.height
             )
-            Global.display_surf.blit(text, text_rect)
+
+            if piece_rect.collidepoint(mouse_pos) and piece.meaning:
+                lines = self._wrap_text(piece.meaning, font, max_tooltip_width)
+                line_height = font.get_linesize()
+                tooltip_width = min(
+                    max(font.size(l)[0] for l in lines) + 20, max_tooltip_width + 20
+                )
+                tooltip_height = line_height * len(lines) + 16
+
+                tooltip_x = mouse_pos[0] + 15
+                tooltip_y = mouse_pos[1] - 10
+                if tooltip_x + tooltip_width > Global.SCREEN_WIDTH:
+                    tooltip_x = mouse_pos[0] - tooltip_width - 15
+                if tooltip_y + tooltip_height > Global.SCREEN_HEIGHT:
+                    tooltip_y = Global.SCREEN_HEIGHT - tooltip_height - 5
+                if tooltip_y < 0:
+                    tooltip_y = 5
+
+                tooltip_background = pygame.Surface(
+                    (tooltip_width, tooltip_height), pygame.SRCALPHA
+                )
+                tooltip_background.fill((0, 0, 0, 200))
+                Global.display_surf.blit(tooltip_background, (tooltip_x, tooltip_y))
+
+                for i, line in enumerate(lines):
+                    text = font.render(line, True, (255, 255, 255))
+                    Global.display_surf.blit(
+                        text, (tooltip_x + 10, tooltip_y + 8 + i * line_height)
+                    )
+
+                break
+
+    @staticmethod
+    def _wrap_text(text: str, font, max_width: int) -> list[str]:
+        words = text.split(" ")
+        lines = []
+        current = ""
+        for word in words:
+            test = f"{current} {word}".strip()
+            if font.size(test)[0] > max_width and current:
+                lines.append(current)
+                current = word
+            else:
+                current = test
+        if current:
+            lines.append(current)
+        return lines
 
     def compare(self) -> float:
         import API
@@ -112,8 +176,6 @@ class Flag:
             for y in range(reference_pixels.shape[1]):
                 if reference_pixels[x][y] == current_pixels[x][y]:
                     matches += 1
-        # del reference_pixels
-        # del current_pixels
         self.score = matches / total * 100
         API.set_flag_score(self.id, self.score)
         return self.score
