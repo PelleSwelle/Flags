@@ -2,11 +2,12 @@ import pygame
 from GlobalValues import Global
 from dataclasses import dataclass, field
 from random import randint
+from typing import Optional
 
 
 @dataclass
 class Piece:
-    id: int
+    id: Optional[int]
     image: pygame.Surface
     correct_x: float
     correct_y: float

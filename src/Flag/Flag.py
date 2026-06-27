@@ -27,6 +27,13 @@ class Flag:
     assembly_area_rect: pygame.Rect = field(init=False)
 
     def __post_init__(self):
+        if not self.pieces:
+            self.min_x = self.min_y = 0
+            self.reference_surface = pygame.Surface((1, 1), pygame.SRCALPHA)
+            self.assembly_surface = pygame.Surface((1, 1), pygame.SRCALPHA)
+            self.assembly_area_rect = pygame.Rect(0, 0, 1, 1)
+            return
+
         self.min_x = min(p.correct_x for p in self.pieces)
         self.min_y = min(p.correct_y for p in self.pieces)
         max_x = max(p.correct_x + p.image.get_width() for p in self.pieces)
@@ -34,8 +41,11 @@ class Flag:
 
         surf_size = (int(max_x - self.min_x), int(max_y - self.min_y))
 
+        from API import normalize_asset_path
+
+        normalized_asset_path = normalize_asset_path(self.pieces[0].asset_path)
         path_to_reference_image = os.path.join(
-            os.path.dirname(self.pieces[0].asset_path), "reference.png"
+            os.path.dirname(normalized_asset_path), "reference.png"
         )
         if os.path.exists(path_to_reference_image):
             self.reference_surface = pygame.image.load(
@@ -107,62 +117,15 @@ class Flag:
 
     def draw_hover_tooltip(self):
         mouse_pos = pygame.mouse.get_pos()
-        font = pygame.font.Font(None, 22)
-        max_tooltip_width = 300
-
-        for piece in self.pieces:
+        for piece in reversed(self.pieces):
             screen_x = self.assembly_area_rect.x + int(piece.rect.x - self.min_x)
             screen_y = self.assembly_area_rect.y + int(piece.rect.y - self.min_y)
             piece_rect = pygame.Rect(
                 screen_x, screen_y, piece.rect.width, piece.rect.height
             )
-
             if piece_rect.collidepoint(mouse_pos) and piece.meaning:
-                lines = self._wrap_text(piece.meaning, font, max_tooltip_width)
-                line_height = font.get_linesize()
-                tooltip_width = min(
-                    max(font.size(l)[0] for l in lines) + 20, max_tooltip_width + 20
-                )
-                tooltip_height = line_height * len(lines) + 16
-
-                tooltip_x = mouse_pos[0] + 15
-                tooltip_y = mouse_pos[1] - 10
-                if tooltip_x + tooltip_width > Global.SCREEN_WIDTH:
-                    tooltip_x = mouse_pos[0] - tooltip_width - 15
-                if tooltip_y + tooltip_height > Global.SCREEN_HEIGHT:
-                    tooltip_y = Global.SCREEN_HEIGHT - tooltip_height - 5
-                if tooltip_y < 0:
-                    tooltip_y = 5
-
-                tooltip_background = pygame.Surface(
-                    (tooltip_width, tooltip_height), pygame.SRCALPHA
-                )
-                tooltip_background.fill((0, 0, 0, 200))
-                Global.display_surf.blit(tooltip_background, (tooltip_x, tooltip_y))
-
-                for i, line in enumerate(lines):
-                    text = font.render(line, True, (255, 255, 255))
-                    Global.display_surf.blit(
-                        text, (tooltip_x + 10, tooltip_y + 8 + i * line_height)
-                    )
-
+                draw_tooltip(Global.display_surf, piece.meaning, mouse_pos)
                 break
-
-    @staticmethod
-    def _wrap_text(text: str, font, max_width: int) -> list[str]:
-        words = text.split(" ")
-        lines = []
-        current = ""
-        for word in words:
-            test = f"{current} {word}".strip()
-            if font.size(test)[0] > max_width and current:
-                lines.append(current)
-                current = word
-            else:
-                current = test
-        if current:
-            lines.append(current)
-        return lines
 
     def compare(self) -> float:
         import API
@@ -193,3 +156,44 @@ class Flag:
             if piece.is_active and i > 0:
                 self.pieces[i], self.pieces[i - 1] = self.pieces[i - 1], self.pieces[i]
                 break
+
+
+def draw_tooltip(surface, text, mouse_pos, max_width=300):
+    font = pygame.font.Font(None, 22)
+    lines = _wrap_text(text, font, max_width)
+    line_height = font.get_linesize()
+    tw = min(max(font.size(l)[0] for l in lines) + 20, max_width + 20)
+    th = line_height * len(lines) + 16
+
+    tx = mouse_pos[0] + 15
+    ty = mouse_pos[1] - 10
+    if tx + tw > Global.SCREEN_WIDTH:
+        tx = mouse_pos[0] - tw - 15
+    if ty + th > Global.SCREEN_HEIGHT:
+        ty = Global.SCREEN_HEIGHT - th - 5
+    if ty < 0:
+        ty = 5
+
+    bg = pygame.Surface((tw, th), pygame.SRCALPHA)
+    bg.fill((0, 0, 0, 200))
+    surface.blit(bg, (tx, ty))
+
+    for i, line in enumerate(lines):
+        text_surf = font.render(line, True, (255, 255, 255))
+        surface.blit(text_surf, (tx + 10, ty + 8 + i * line_height))
+
+
+def _wrap_text(text: str, font, max_width: int) -> list[str]:
+    words = text.split(" ")
+    lines = []
+    current = ""
+    for word in words:
+        test = f"{current} {word}".strip()
+        if font.size(test)[0] > max_width and current:
+            lines.append(current)
+            current = word
+        else:
+            current = test
+    if current:
+        lines.append(current)
+    return lines

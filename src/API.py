@@ -56,8 +56,16 @@ def get_flag_by_id(id: int):
     )
 
 
+def normalize_asset_path(path: str) -> str:
+    if not path.startswith("assets/"):
+        path = "assets/" + path
+    if not path.endswith(".png"):
+        path += ".png"
+    return path
+
+
 def load_image(path: str) -> pygame.Surface:
-    return pygame.image.load(path).convert_alpha()
+    return pygame.image.load(normalize_asset_path(path)).convert_alpha()
 
 
 def set_flag_score(flag_id: int, score: float):
