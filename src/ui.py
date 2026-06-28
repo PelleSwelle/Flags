@@ -2,6 +2,8 @@ import pygame_gui
 import pygame
 from GlobalValues import Global
 from API import get_all_country_names, get_playable_country_names
+from typing import List
+
 
 class UI:
     BUTTON_HEIGHT = 50
@@ -10,14 +12,16 @@ class UI:
 
     dropdown_size = (200, BUTTON_HEIGHT)
 
-
     playable_names = [name for _, name in get_playable_country_names()]
     all_names = [name for _, name in get_all_country_names()]
 
     # ************* MENU *************
     flags_dropdown = pygame_gui.elements.UIDropDownMenu(
         options_list=[(name, str(id)) for id, name in get_playable_country_names()],
-        starting_option=(get_all_country_names()[0][1], str(get_all_country_names()[0][0])),
+        starting_option=(
+            get_all_country_names()[0][1],
+            str(get_all_country_names()[0][0]),
+        ),
         relative_rect=pygame.Rect((100, 100), dropdown_size),
         manager=manager,
     )
@@ -28,7 +32,6 @@ class UI:
         manager=manager,
     )
 
-
     # ************* IN GAME *************
 
     check_button = pygame_gui.elements.UIButton(
@@ -38,13 +41,13 @@ class UI:
     )
 
     information_box = pygame_gui.elements.UITextBox(
-       html_text="[Category] in [Region], [Continent]",
-       relative_rect=pygame.Rect((400, 200), (200, 200))
+        html_text="[Category] in [Region], [Continent]",
+        relative_rect=pygame.Rect((400, 200), (200, 200)),
     )
 
     piece_description_box = pygame_gui.elements.UITextBox(
         html_text="Description of the symbolism of the given piece",
-        relative_rect=pygame.Rect((pygame.mouse.get_pos()), (300, 50))
+        relative_rect=pygame.Rect((pygame.mouse.get_pos()), (300, 50)),
     )
 
     @classmethod
@@ -58,3 +61,57 @@ class UI:
                 print(f"Flag match: {score:.1f}%")
         elif event.ui_element == cls.piece_description_box:
             cls.piece_description_box.show()
+
+
+def draw_tooltip(surface, text, mouse_pos, max_width=300):
+    font = pygame.font.Font(None, 22)
+    lines = _wrap_text(text, font, max_width)
+    line_height = font.get_linesize()
+    tw = min(max(font.size(l)[0] for l in lines) + 20, max_width + 20)
+    th = line_height * len(lines) + 16
+
+    tx = mouse_pos[0] + 15
+    ty = mouse_pos[1] - 10
+    if tx + tw > Global.SCREEN_WIDTH:
+        tx = mouse_pos[0] - tw - 15
+    if ty + th > Global.SCREEN_HEIGHT:
+        ty = Global.SCREEN_HEIGHT - th - 5
+    if ty < 0:
+        ty = 5
+
+    bg = pygame.Surface((tw, th), pygame.SRCALPHA)
+    bg.fill((0, 0, 0, 200))
+    surface.blit(bg, (tx, ty))
+
+    for i, line in enumerate(lines):
+        text_surf = font.render(line, True, (255, 255, 255))
+        surface.blit(text_surf, (tx + 10, ty + 8 + i * line_height))
+
+
+def _wrap_text(text: str, font, max_width: int) -> List[str]:
+    words = text.split(" ")
+    lines = []
+    current = ""
+    for word in words:
+        test = f"{current} {word}".strip()
+        if font.size(test)[0] > max_width and current:
+            lines.append(current)
+            current = word
+        else:
+            current = test
+    if current:
+        lines.append(current)
+    return lines
+
+
+def draw_hover_tooltip(flag):
+    mouse_pos = pygame.mouse.get_pos()
+    for piece in reversed(flag.pieces):
+        screen_x = flag.assembly_area_rect.x + int(piece.rect.x - flag.min_x)
+        screen_y = flag.assembly_area_rect.y + int(piece.rect.y - flag.min_y)
+        piece_rect = pygame.Rect(
+            screen_x, screen_y, piece.rect.width, piece.rect.height
+        )
+        if piece_rect.collidepoint(mouse_pos) and piece.meaning:
+            draw_tooltip(Global.display_surf, piece.meaning, mouse_pos)
+            break

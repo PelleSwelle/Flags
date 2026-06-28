@@ -19,6 +19,7 @@ class GameState(State):
         UI.flags_dropdown.hide()
         UI.load_button.hide()
         UI.check_button.show()
+        UI.information_box.hide()
         print("entered game state")
 
     def handle_event(self, event):

@@ -13,6 +13,7 @@ class MenuState(State):
         UI.load_button.show()
         UI.check_button.hide()
         UI.piece_description_box.hide()
+        UI.information_box.hide()
         print("Entered Menu state")
 
     def handle_event(self, event):

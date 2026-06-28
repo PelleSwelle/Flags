@@ -115,18 +115,6 @@ class Flag:
                     3,
                 )
 
-    def draw_hover_tooltip(self):
-        mouse_pos = pygame.mouse.get_pos()
-        for piece in reversed(self.pieces):
-            screen_x = self.assembly_area_rect.x + int(piece.rect.x - self.min_x)
-            screen_y = self.assembly_area_rect.y + int(piece.rect.y - self.min_y)
-            piece_rect = pygame.Rect(
-                screen_x, screen_y, piece.rect.width, piece.rect.height
-            )
-            if piece_rect.collidepoint(mouse_pos) and piece.meaning:
-                draw_tooltip(Global.display_surf, piece.meaning, mouse_pos)
-                break
-
     def compare(self) -> float:
         import API
 
@@ -156,44 +144,3 @@ class Flag:
             if piece.is_active and i > 0:
                 self.pieces[i], self.pieces[i - 1] = self.pieces[i - 1], self.pieces[i]
                 break
-
-
-def draw_tooltip(surface, text, mouse_pos, max_width=300):
-    font = pygame.font.Font(None, 22)
-    lines = _wrap_text(text, font, max_width)
-    line_height = font.get_linesize()
-    tw = min(max(font.size(l)[0] for l in lines) + 20, max_width + 20)
-    th = line_height * len(lines) + 16
-
-    tx = mouse_pos[0] + 15
-    ty = mouse_pos[1] - 10
-    if tx + tw > Global.SCREEN_WIDTH:
-        tx = mouse_pos[0] - tw - 15
-    if ty + th > Global.SCREEN_HEIGHT:
-        ty = Global.SCREEN_HEIGHT - th - 5
-    if ty < 0:
-        ty = 5
-
-    bg = pygame.Surface((tw, th), pygame.SRCALPHA)
-    bg.fill((0, 0, 0, 200))
-    surface.blit(bg, (tx, ty))
-
-    for i, line in enumerate(lines):
-        text_surf = font.render(line, True, (255, 255, 255))
-        surface.blit(text_surf, (tx + 10, ty + 8 + i * line_height))
-
-
-def _wrap_text(text: str, font, max_width: int) -> list[str]:
-    words = text.split(" ")
-    lines = []
-    current = ""
-    for word in words:
-        test = f"{current} {word}".strip()
-        if font.size(test)[0] > max_width and current:
-            lines.append(current)
-            current = word
-        else:
-            current = test
-    if current:
-        lines.append(current)
-    return lines
