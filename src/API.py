@@ -67,6 +67,18 @@ def normalize_asset_path(path: str) -> str:
 def load_image(path: str) -> pygame.Surface:
     return pygame.image.load(normalize_asset_path(path)).convert_alpha()
 
+def get_flags_in_region(region_id, int):
+    param = (region_id, )
+    cursor = conn.execute(
+        """
+        select 
+            id, popular_name
+        from
+            flags
+        where continent_id = ?
+        """,
+        param
+    )
 
 def set_flag_score(flag_id: int, score: float):
     param1 = (score, flag_id)
