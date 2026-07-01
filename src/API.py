@@ -80,6 +80,17 @@ def get_flags_in_region(region_id, int):
         param
     )
 
+def get_continents():
+    cursor = conn.execute(
+        """
+        select 
+            id, name
+        from
+            continents
+        """
+    )
+    return [(row.id, row.name) for row in cursor.fetchall()]
+
 def set_flag_score(flag_id: int, score: float):
     param1 = (score, flag_id)
     conn.execute(

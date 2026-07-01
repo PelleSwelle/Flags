@@ -1,7 +1,7 @@
 import pygame_gui
 import pygame
 from GlobalValues import Global
-from API import get_all_country_names, get_playable_country_names
+from API import get_all_country_names, get_playable_country_names, get_continents
 from typing import List
 
 
@@ -15,6 +15,14 @@ class UI:
     playable_names = [name for _, name in get_playable_country_names()]
     all_names = [name for _, name in get_all_country_names()]
 
+    all_continents = [name for _, name in get_continents()]
+
+    container = pygame_gui.elements.UIAutoResizingContainer(
+        pygame.Rect((0, 0), (200, 200)),
+        resize_right=True,
+        resize_bottom=True
+    )
+
     # ************* MENU *************
     flags_dropdown = pygame_gui.elements.UIDropDownMenu(
         options_list=[(name, str(id)) for id, name in get_playable_country_names()],
@@ -25,6 +33,18 @@ class UI:
         relative_rect=pygame.Rect((100, 100), dropdown_size),
         manager=manager,
     )
+    @classmethod
+    def populate_continent_buttons(cls):
+        continent_buttons = []
+        for i, continent in enumerate(cls.all_continents):
+            continent_buttons.append(
+                pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((0, i * 100), (50, 100)),
+                    text=continent,
+                    manager=cls.manager,
+                    container=cls.container
+                )
+            )
 
     load_button = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((300, 100), (150, BUTTON_HEIGHT)),
@@ -67,25 +87,25 @@ def draw_tooltip(surface, text, mouse_pos, max_width=300):
     font = pygame.font.Font(None, 22)
     lines = _wrap_text(text, font, max_width)
     line_height = font.get_linesize()
-    tw = min(max(font.size(l)[0] for l in lines) + 20, max_width + 20)
-    th = line_height * len(lines) + 16
+    tooltip_width = min(max(font.size(l)[0] for l in lines) + 20, max_width + 20)
+    tooltip_height = line_height * len(lines) + 16
 
-    tx = mouse_pos[0] + 15
-    ty = mouse_pos[1] - 10
-    if tx + tw > Global.SCREEN_WIDTH:
-        tx = mouse_pos[0] - tw - 15
-    if ty + th > Global.SCREEN_HEIGHT:
-        ty = Global.SCREEN_HEIGHT - th - 5
-    if ty < 0:
-        ty = 5
+    tooltip_x = mouse_pos[0] + 15
+    tooltip_y = mouse_pos[1] - 10
+    if tooltip_x + tooltip_width > Global.SCREEN_WIDTH:
+        tooltip_x = mouse_pos[0] - tooltip_width - 15
+    if tooltip_y + tooltip_height > Global.SCREEN_HEIGHT:
+        tooltip_y = Global.SCREEN_HEIGHT - tooltip_height - 5
+    if tooltip_y < 0:
+        tooltip_y = 5
 
-    bg = pygame.Surface((tw, th), pygame.SRCALPHA)
+    bg = pygame.Surface((tooltip_width, tooltip_height), pygame.SRCALPHA)
     bg.fill((0, 0, 0, 200))
-    surface.blit(bg, (tx, ty))
+    surface.blit(bg, (tooltip_x, tooltip_y))
 
     for i, line in enumerate(lines):
         text_surf = font.render(line, True, (255, 255, 255))
-        surface.blit(text_surf, (tx + 10, ty + 8 + i * line_height))
+        surface.blit(text_surf, (tooltip_x + 10, tooltip_y + 8 + i * line_height))
 
 
 def _wrap_text(text: str, font, max_width: int) -> List[str]:

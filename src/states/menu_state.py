@@ -14,6 +14,7 @@ class MenuState(State):
         UI.check_button.hide()
         UI.piece_description_box.hide()
         UI.information_box.hide()
+        UI.populate_continent_buttons()
         print("Entered Menu state")
 
     def handle_event(self, event):
