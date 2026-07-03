@@ -24,6 +24,19 @@ class Controller:
         if event.key == pygame.K_c:
             self.check_correctness(game.current_flag)
 
+    def _get_piece_at(self, pos, game):
+        flag = game.current_flag
+        if not flag:
+            return None
+        assembly_x, assembly_y = flag.assembly_area_rect.topleft
+        for piece in reversed(flag.pieces):
+            screen_x = assembly_x + int(piece.rect.x - flag.min_x)
+            screen_y = assembly_y + int(piece.rect.y - flag.min_y)
+            
+            rect = pygame.Rect(screen_x, screen_y, piece.rect.width, piece.rect.height)
+            if rect.collidepoint(pos):
+                return piece
+        return None
     def check_correctness(self, flag: Flag):
         score = flag.compare()
         print(f"Flag match: {score:.1f}%")
