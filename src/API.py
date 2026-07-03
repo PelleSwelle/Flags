@@ -67,7 +67,7 @@ def normalize_asset_path(path: str) -> str:
 def load_image(path: str) -> pygame.Surface:
     return pygame.image.load(normalize_asset_path(path)).convert_alpha()
 
-def get_flags_in_region(region_id, int):
+def get_flags_in_continent(region_id: int):
     param = (region_id, )
     cursor = conn.execute(
         """
@@ -79,6 +79,8 @@ def get_flags_in_region(region_id, int):
         """,
         param
     )
+    print(cursor.fetchall())
+    return [(row.id, row.popular_name) for row in cursor.fetchall()]
 
 def get_continents():
     cursor = conn.execute(

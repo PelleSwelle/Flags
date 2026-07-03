@@ -1,5 +1,7 @@
 import pygame_gui
+import pygame
 from states.state import State
+from API import get_flags_in_continent
 from ui import UI
 
 
@@ -14,7 +16,8 @@ class MenuState(State):
         UI.check_button.hide()
         UI.piece_description_box.hide()
         UI.information_box.hide()
-        UI.populate_continent_buttons()
+        self.game.current_range = get_flags_in_continent(7)
+        print(self.game.current_range)
         print("Entered Menu state")
 
     def handle_event(self, event):
