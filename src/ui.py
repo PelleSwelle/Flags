@@ -1,7 +1,12 @@
 import pygame_gui
 import pygame
 from GlobalValues import Global
-from API import get_all_country_names, get_playable_country_names, get_continents, get_flags_in_continent
+from API import (
+    get_all_country_names,
+    get_playable_country_names,
+    get_continents,
+    get_flags_in_continent,
+)
 from typing import List
 
 
@@ -18,9 +23,7 @@ class UI:
     all_continents = [name for _, name in get_continents()]
 
     container = pygame_gui.elements.UIAutoResizingContainer(
-        pygame.Rect((0, 0), (200, 200)),
-        resize_right=True,
-        resize_bottom=True
+        pygame.Rect((0, 0), (200, 200)), resize_right=True, resize_bottom=True
     )
 
     # ************* MENU *************
@@ -36,20 +39,16 @@ class UI:
 
     continents_dropdown = pygame_gui.elements.UIDropDownMenu(
         options_list=[(name, str(id)) for id, name in get_continents()],
-        starting_option=(
-            get_continents()[0][1],
-            str(get_continents()[0][0])
-        ),
+        starting_option=(get_continents()[0][1], str(get_continents()[0][0])),
         relative_rect=pygame.Rect((20, 20), dropdown_size),
-        manager=manager
+        manager=manager,
     )
 
-    load_countries_button = pygame_gui.elements.UIButton(
+    load_continent_button = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((300, 20), (150, BUTTON_HEIGHT)),
         text="load selected continent",
         manager=manager,
     )
-
 
     load_button = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((300, 100), (150, BUTTON_HEIGHT)),
@@ -80,7 +79,7 @@ class UI:
         if event.ui_element == cls.load_button:
             flag_id = int(cls.flags_dropdown.selected_option[1])
             game.set_current_flag(flag_id)
-        if event.ui_element == cls.load_countries_button:
+        if event.ui_element == cls.load_continent_button:
             continent_id = int(cls.continents_dropdown.selected_option[1])
             game.set_current_range(get_flags_in_continent(continent_id))
         elif event.ui_element == cls.check_button:
@@ -89,8 +88,6 @@ class UI:
                 print(f"Flag match: {score:.1f}%")
         elif event.ui_element == cls.piece_description_box:
             cls.piece_description_box.show()
-
-
 
 
 def draw_tooltip(surface, text, mouse_pos, max_width=300):

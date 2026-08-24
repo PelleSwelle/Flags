@@ -20,6 +20,8 @@ class GameState(State):
     def on_enter(self):
         UI.flags_dropdown.hide()
         UI.load_button.hide()
+        UI.load_continent_button.hide()
+        UI.continents_dropdown.hide()
         UI.check_button.show()
         UI.information_box.hide()
         print("entered game state")
@@ -41,7 +43,6 @@ class GameState(State):
             self._on_mouse_motion(event)
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self._on_mouse_up(event)
-
 
     def _on_mouse_down(self, event):
         flag = self.game.current_flag
