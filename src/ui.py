@@ -27,6 +27,11 @@ class UI:
     )
 
     # ************* MENU *************
+
+    title = pygame_gui.elements.UITextBox(
+        html_text="Flag Assembly", relative_rect=pygame.Rect((0, 0), (200, 100))
+    )
+
     flags_dropdown = pygame_gui.elements.UIDropDownMenu(
         options_list=[(name, str(id)) for id, name in get_playable_country_names()],
         starting_option=(

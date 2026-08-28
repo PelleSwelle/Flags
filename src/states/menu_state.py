@@ -11,6 +11,7 @@ class MenuState(State):
         self.state_machine = state_machine
 
     def on_enter(self):
+        UI.title.show()
         UI.flags_dropdown.show()
         UI.load_button.show()
         UI.check_button.hide()
