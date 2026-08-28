@@ -16,6 +16,7 @@ class MenuState(State):
         UI.check_button.hide()
         UI.piece_description_box.hide()
         UI.information_box.hide()
+        UI.next_button.hide()
         self.game.current_range = get_flags_in_continent(7)
         print(self.game.current_range)
         print("Entered Menu state")

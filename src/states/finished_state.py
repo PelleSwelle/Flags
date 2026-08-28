@@ -34,6 +34,7 @@ class FinishedState(State):
             UI.information_box.set_text(text)
             UI.information_box.show()
         UI.check_button.hide()
+        UI.next_button.show()
         print("Entered finished state")
 
     def handle_event(self, event):

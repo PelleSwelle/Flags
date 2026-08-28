@@ -28,11 +28,14 @@ class GameState(State):
 
     def handle_event(self, event):
         UI.manager.process_events(event)
+        # *********** KEYBOARD INPUT ***********
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
                 self.state_machine.push(PauseState(self.game, self.state_machine))
             else:
                 self.controller.handle_key_event(event, self.game)
+
+        # *********** UI INPUT ***********
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             UI.handle_button_event(event, self.game)
             if event.ui_element == UI.check_button:

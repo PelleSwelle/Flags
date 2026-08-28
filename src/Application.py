@@ -4,8 +4,9 @@ import API
 from Flag.Flag import Flag
 
 
-class Game:
-    """  The entirety of the game, including menu, gameplay, score screen. Everything that happens from when the player turns on the game."""
+class Application:
+    """The entirety of the game, including menu, gameplay, score screen. Everything that happens from when the player turns on the game."""
+
     def __init__(self, database_path: str):
         self.connection = sqlite3.connect(database_path)
         self.cursor = self.connection.cursor()
@@ -15,7 +16,6 @@ class Game:
 
     def set_current_range(self, range: list[Flag]):
         self.current_range = range
-
 
     # TODO: this should take a flag, not an id and then get the flag.
     def set_current_flag(self, id):

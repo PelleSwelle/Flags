@@ -74,11 +74,19 @@ class UI:
         relative_rect=pygame.Rect((pygame.mouse.get_pos()), (300, 50)),
     )
 
+    next_button = pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((800, 800), (150, BUTTON_HEIGHT)),
+        text="Next Flag",
+        manager=manager,
+    )
+
     @classmethod
     def handle_button_event(cls, event, game):
+        # TODO: always load flag as part of a range. Also if only playing a single flag
         if event.ui_element == cls.load_button:
             flag_id = int(cls.flags_dropdown.selected_option[1])
-            game.set_current_flag(flag_id)
+            # game.set_current_flag(flag_id)
+            game.set_current_range([flag_id])
         if event.ui_element == cls.load_continent_button:
             continent_id = int(cls.continents_dropdown.selected_option[1])
             game.set_current_range(get_flags_in_continent(continent_id))
