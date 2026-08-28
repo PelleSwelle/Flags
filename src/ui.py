@@ -22,14 +22,17 @@ class UI:
 
     all_continents = [name for _, name in get_continents()]
 
-    container = pygame_gui.elements.UIAutoResizingContainer(
-        pygame.Rect((0, 0), (200, 200)), resize_right=True, resize_bottom=True
+    container = pygame_gui.elements.UIPanel(
+        relative_rect=pygame.Rect((0, 0), (200, 800)), manager=manager
     )
 
     # ************* MENU *************
 
     title = pygame_gui.elements.UITextBox(
-        html_text="Flag Assembly", relative_rect=pygame.Rect((0, 0), (200, 100))
+        relative_rect=pygame.Rect((0, 0), (195, 50)),
+        html_text="Flag Assembly",
+        manager=manager,
+        container=container,
     )
 
     flags_dropdown = pygame_gui.elements.UIDropDownMenu(
@@ -38,7 +41,7 @@ class UI:
             get_all_country_names()[0][1],
             str(get_all_country_names()[0][0]),
         ),
-        relative_rect=pygame.Rect((100, 100), dropdown_size),
+        relative_rect=pygame.Rect((0, 0), dropdown_size),
         manager=manager,
     )
 
@@ -48,12 +51,14 @@ class UI:
         relative_rect=pygame.Rect((20, 20), dropdown_size),
         manager=manager,
     )
+    continents_dropdown.hide()
 
     load_continent_button = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((300, 20), (150, BUTTON_HEIGHT)),
         text="load selected continent",
         manager=manager,
     )
+    load_continent_button.hide()
 
     load_button = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((300, 100), (150, BUTTON_HEIGHT)),
