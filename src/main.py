@@ -3,7 +3,7 @@ import pygame_gui
 from state_machine import StateMachine
 from states.menu_state import MenuState
 from GlobalValues import Global
-from Game import Game
+from Application import Application
 from ui import UI
 
 
@@ -11,7 +11,7 @@ class App:
     def __init__(self):
         self._running = True
         self.clock = pygame.time.Clock()
-        self.game = Game(Global.DATABASE_PATH)
+        self.game = Application(Global.DATABASE_PATH)
         self.state_machine = StateMachine()
         pygame.font.init()
 
